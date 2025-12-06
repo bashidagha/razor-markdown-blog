@@ -1,0 +1,51 @@
+@page "{slug}"
+@model PostModel
+@{
+    ViewData["Title"] = Model.Post?.Title ?? "Blog Post";
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-page="/Blog">Blog</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Post?.Title</li>
+        </ol>
+    </nav>
+
+    @if (Model.Post != null)
+    {
+        <article class="blog-post">
+            <header class="mb-4">
+                <h1 class="display-4">@Model.Post.Title</h1>
+                <div class="text-muted mb-3">
+                    <small>
+                        <i class="bi bi-calendar"></i> @Model.Post.Date.ToString("MMMM dd, yyyy")
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-person"></i> @Model.Post.Author
+                    </small>
+                </div>
+            </header>
+
+            <div class="blog-content">
+                @Html.Raw(Model.Post.Content)
+            </div>
+
+            <hr class="my-5">
+
+            <div class="text-center">
+                <a asp-page="/Blog" class="btn btn-outline-primary">
+                    ← Back to Blog
+                </a>
+            </div>
+        </article>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <h4>Post not found</h4>
+            <p class="text-muted">The blog post you're looking for doesn't exist.</p>
+            <a asp-page="/Blog" class="btn btn-primary">Back to Blog</a>
+        </div>
+    }
+</div>
