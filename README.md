@@ -14,170 +14,72 @@ A simple, fast, and beautiful Markdown-powered blog built with ASP.NET Core and 
 -   **Frontmatter support** - Add metadata to your posts (title, date, author)
 -   **SEO-friendly** - Automatic meta tags, Open Graph, and Twitter Cards
 -   **TailwindCSS styling** - Modern, utility-first CSS framework for beautiful, responsive designs
--   **Beautiful design** - Clean, responsive layout with TailwindCSS
--   **Zero setup** - Just write Markdown files and they appear as blog posts!
 
-## 🚀 Quick Start
+# MyMarkdownBlog — Simple Markdown blog (ASP.NET Core)
 
-### 1. Clone the repository
+A compact, fast blog that turns Markdown files into pre-rendered HTML. Write posts in `posts/` and the site compiles them with Markdig. Now supports "Series": group related posts using `series` and `series_index` in frontmatter.
+
+Highlights
+
+-   Fast, pre-compiled HTML for great performance and SEO
+-   Markdown with frontmatter (title, date, author, image, series, series_index)
+-   Table of Contents auto-generated and inserted into posts
+-   Series support: list series at `/Series` and view ordered posts per series
+-   Uses TailwindCSS for a clean, responsive layout
+
+Quick start
+
+1. Clone:
 
 ```bash
 git clone https://github.com/bashidagha/MyMarkdownBlog.git
 cd MyMarkdownBlog
 ```
 
-### 2. Restore dependencies
+2. Restore & run:
 
 ```bash
 dotnet restore
-```
-
-### 3. Run the blog
-
-```bash
 dotnet run
 ```
 
-Open your browser and visit: **https://localhost:5001**
+Open `http://localhost:5077` (or the URL shown in the console).
 
-That's it! 🎉 Your blog is now running.
+Add posts
 
-## 📝 Adding New Posts
+-   Create a file in `posts/` with YAML frontmatter, for example:
 
-Adding a new blog post is super easy! Just create a `.md` file in the `posts/` folder.
-
-### Example Post
-
-Create a file called `my-first-post.md` in the `posts/` folder:
-
-````markdown
+```md
 ---
-title: "My First Blog Post"
+title: "My Post"
 date: "2025-12-07"
-author: "Your Name"
+author: "You"
+series: "Getting Started"
+series_index: 1
 ---
 
-# Welcome to My Blog!
+# My Post
 
-This is my first post. Here's some content:
-
-## Features I Love
-
--   Writing in Markdown is easy
--   Code highlighting works great
--   Frontmatter makes organization simple
-
-### Code Example
-
-```csharp
-using System;
-
-class Program
-{
-    static void Main()
-    {
-        Console.WriteLine("Hello, Blog World!");
-    }
-}
-```
-````
-
-Check out the [Markdig documentation](https://github.com/xoofx/markdig) for more Markdown features!
-
-````
-
-**That's it!** Save the file and refresh your browser - your new post will appear automatically! ✨
-
-## 🔍 SEO Features
-
-This blog is built with SEO in mind:
-
--   **Automatic Meta Tags** - Each post gets proper title, description, and Open Graph tags
--   **Clean URLs** - Posts use SEO-friendly slugs based on titles
--   **Structured Data** - Posts include author and publish date metadata
--   **Fast Loading** - Build-time HTML generation ensures lightning-fast page loads
--   **Mobile-Friendly** - Responsive design works perfectly on all devices
-
-### SEO Best Practices
-
-When writing posts, consider these tips:
-
-1. **Write compelling titles** - Your frontmatter title becomes the page title and meta description
-2. **Use descriptive slugs** - The system automatically generates clean URLs from your titles
-3. **Add author information** - Include your name in the frontmatter for better authorship
-4. **Write meaningful excerpts** - The first 200 characters become your meta description
-
-## 💅 TailwindCSS Benefits
-
-This blog uses TailwindCSS for modern, beautiful styling:
-
--   **Utility-First Approach** - Build custom designs without leaving your HTML
--   **Responsive Design** - Mobile-first responsive classes that work out of the box
--   **Fast Development** - Rapidly build custom user interfaces
--   **No CSS Bloat** - Only includes the CSS you actually use
--   **Consistent Design** - Built-in design system with consistent spacing and typography
--   **Dark Mode Ready** - Easy to add dark mode support with Tailwind's utilities
-
-### Customizing Styles
-
-To modify the blog's appearance:
-
-1. Edit `wwwroot/css/tailwind.css` to add your custom styles
-2. Run `npm run build:css` to compile the CSS
-3. Or use `npm run watch:css` to automatically rebuild when you make changes
-
-## 🛠️ Development
-
-### Running locally
-```bash
-dotnet run
-````
-
-### Building CSS (if you modify Tailwind)
-
-```bash
-npm install
-npm run build:css
+Content...
 ```
 
-### Watching CSS changes during development
+Series behavior
 
-```bash
-npm run watch:css
-```
+-   Posts that share the same `series` value are grouped into a series page.
+-   Use `series_index` (integer) to control ordering; when missing, posts are sorted by date.
+-   Example series posts have been added in `posts/` as `example-series-part-1-introduction.md` and `example-series-part-2-next-steps.md`.
 
-## 📁 Project Structure
+Development notes
 
-```
-MyMarkdownBlog/
-├── posts/              # Your Markdown blog posts go here
-├── wwwroot/
-│   └── compiled-posts/ # Auto-generated HTML files
-├── Services/           # Blog processing logic
-├── Models/             # Data models
-└── Pages/              # Razor Pages (blog index, individual posts)
-```
+-   Compiled HTML files are written to `wwwroot/compiled-posts/` during startup.
+-   To regenerate compiled posts, start the app (`dotnet run`) or call the blog service refresh endpoint if you expose one.
 
-## 🤝 Contributing
+Contributing
 
-Contributions are welcome! Here's how:
+-   Fork, branch, and open a PR. Keep changes focused and add tests where appropriate.
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+License
 
-## 📄 License
+-   MIT
 
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgments
-
--   Built with [ASP.NET Core](https://learn.microsoft.com/aspnet/core/)
--   Markdown processing by [Markdig](https://github.com/xoofx/markdig)
--   Styling with [TailwindCSS](https://tailwindcss.com/)
-
----
-
-**Happy blogging!** 🚀
+Enjoy — write more, ship faster 🚀
