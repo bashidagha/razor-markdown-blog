@@ -15,7 +15,11 @@
             @foreach (var post in Model.Posts)
             {
                 <article
-                    class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                    @if (!string.IsNullOrEmpty(post.Image))
+                    {
+                        <img src="@post.Image" alt="@post.Title" class="w-full h-48 object-cover" />
+                    }
                     <div class="p-6">
                         <h2 class="text-xl font-semibold text-gray-900 mb-3">
                             <a asp-page="/Post" asp-route-slug="@post.Slug" class="hover:text-blue-600 transition-colors">

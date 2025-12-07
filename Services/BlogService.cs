@@ -126,6 +126,7 @@ public class BlogService : IBlogService
         var title = frontmatter.GetValueOrDefault("title") ?? Path.GetFileNameWithoutExtension(filePath);
         var dateStr = frontmatter.GetValueOrDefault("date") ?? File.GetCreationTime(filePath).ToString("yyyy-MM-dd");
         var author = frontmatter.GetValueOrDefault("author") ?? "Admin";
+        var image = frontmatter.GetValueOrDefault("image") ?? string.Empty;
 
         if (!DateTime.TryParse(dateStr, out var date))
         {
@@ -147,7 +148,8 @@ public class BlogService : IBlogService
             Date = date,
             Content = htmlContent,
             Excerpt = excerpt,
-            Author = author
+            Author = author,
+            Image = image
         };
     }
 

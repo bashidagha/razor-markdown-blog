@@ -19,4 +19,6 @@ public class BlogPost
     public string Excerpt { get; set; } = string.Empty;
 
     public string Author { get; set; } = "Admin";
+
+    public string Image { get; set; } = string.Empty;
 }

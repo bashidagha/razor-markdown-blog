@@ -2,6 +2,7 @@
 title: "Welcome to My Markdown Blog"
 date: "2025-12-06"
 author: "Admin"
+image: "/images/blog/welcome-hero.webp"
 ---
 
 # Welcome to My Markdown Blog

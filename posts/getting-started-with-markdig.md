@@ -2,6 +2,7 @@
 title: "Getting Started with Markdig: A Powerful Markdown Parser"
 date: "2025-12-05"
 author: "Admin"
+image: "/images/blog/markdig-hero.webp"
 ---
 
 # Getting Started with Markdig
