@@ -1,5 +1,6 @@
 using Markdig;
 using System.Text.RegularExpressions;
+using System.Net;
 
 namespace MarkdownProcessor
 {
@@ -60,6 +61,10 @@ namespace MarkdownProcessor
 
             var slug = GenerateSlug(title);
             var htmlContent = ConvertMarkdownToHtml(markdownContent);
+
+            // Generate TOC and include before content if present
+            var toc = GenerateTocHtml(htmlContent);
+            var contentWithToc = string.IsNullOrWhiteSpace(toc) ? htmlContent : (toc + "\n" + htmlContent);
             var excerpt = GenerateExcerpt(markdownContent);
 
             // Create HTML file with metadata
@@ -78,7 +83,7 @@ namespace MarkdownProcessor
             <p class=""meta"">Published on {date:MMMM dd, yyyy} by {author}</p>
         </header>
         <div class=""content"">
-            {htmlContent}
+                {contentWithToc}
         </div>
     </article>
 </body>
@@ -164,6 +169,69 @@ namespace MarkdownProcessor
             slug = slug.Trim('-');
 
             return slug;
+        }
+
+        static string GenerateTocHtml(string html)
+        {
+            var headingRegex = new Regex("<h([1-6])\\s+id=\"([^\"]+)\">(.+?)</h\\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            var matches = headingRegex.Matches(html);
+
+            var headings = new List<(int level, string id, string text)>();
+
+            foreach (Match m in matches)
+            {
+                if (!m.Success) continue;
+                if (!int.TryParse(m.Groups[1].Value, out var level)) continue;
+                var id = m.Groups[2].Value;
+                var innerHtml = m.Groups[3].Value;
+                var text = Regex.Replace(innerHtml, "<.*?>", "");
+                text = WebUtility.HtmlDecode(text).Trim();
+
+                if (level >= 2 && level <= 4)
+                {
+                    headings.Add((level, id, text));
+                }
+            }
+
+            if (headings.Count == 0)
+                return string.Empty;
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("<nav class=\"toc-container bg-gray-50 border rounded-md p-4 mb-6\" aria-label=\"Table of contents\">");
+            sb.AppendLine("  <p class=\"font-semibold mb-2\">Contents</p>");
+
+            int baseLevel = headings.Min(h => h.level);
+            int currentLevel = baseLevel;
+
+            sb.AppendLine("  <ul class=\"toc-list\">");
+
+            foreach (var h in headings)
+            {
+                while (h.level > currentLevel)
+                {
+                    sb.AppendLine("    <ul>");
+                    currentLevel++;
+                }
+
+                while (h.level < currentLevel)
+                {
+                    sb.AppendLine("    </ul>");
+                    currentLevel--;
+                }
+
+                sb.AppendLine($"    <li class=\"toc-item toc-h{h.level}\"><a class=\"toc-link text-sm text-blue-600 hover:underline\" href=\"#{h.id}\">{WebUtility.HtmlEncode(h.text)}</a></li>");
+            }
+
+            while (currentLevel > baseLevel)
+            {
+                sb.AppendLine("    </ul>");
+                currentLevel--;
+            }
+
+            sb.AppendLine("  </ul>");
+            sb.AppendLine("</nav>");
+
+            return sb.ToString();
         }
     }
 }

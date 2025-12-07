@@ -1,6 +1,7 @@
 using Markdig;
 using MyMarkdownBlog.Models;
 using System.Text.RegularExpressions;
+using System.Net;
 
 namespace MyMarkdownBlog.Services;
 
@@ -135,6 +136,22 @@ public class BlogService : IBlogService
 
         var slug = GenerateSlug(title);
         var htmlContent = ConvertMarkdownToHtml(markdownContent);
+
+        // Generate and insert TOC (after first H1 if present)
+        var tocHtml = GenerateTocHtml(htmlContent);
+        if (!string.IsNullOrWhiteSpace(tocHtml))
+        {
+            var h1Regex = new Regex("<h1\\b.*?>.*?</h1>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            if (h1Regex.IsMatch(htmlContent))
+            {
+                htmlContent = h1Regex.Replace(htmlContent, m => m.Value + "\n" + tocHtml, 1);
+            }
+            else
+            {
+                htmlContent = tocHtml + "\n" + htmlContent;
+            }
+        }
+
         var excerpt = GenerateExcerpt(markdownContent);
 
         // Save compiled HTML
@@ -201,6 +218,73 @@ public class BlogService : IBlogService
             .Build();
 
         return Markdown.ToHtml(markdown, pipeline);
+    }
+
+    private string GenerateTocHtml(string html)
+    {
+        // Find headings with id attributes (h1..h6)
+        var headingRegex = new Regex("<h([1-6])\\s+id=\"([^\"]+)\">(.+?)</h\\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        var matches = headingRegex.Matches(html);
+
+        var headings = new List<(int level, string id, string text)>();
+
+        foreach (Match m in matches)
+        {
+            if (!m.Success) continue;
+            if (!int.TryParse(m.Groups[1].Value, out var level)) continue;
+            var id = m.Groups[2].Value;
+            var innerHtml = m.Groups[3].Value;
+            // Strip any inner tags and decode HTML entities
+            var text = Regex.Replace(innerHtml, "<.*?>", "");
+            text = WebUtility.HtmlDecode(text).Trim();
+
+            // Skip the main H1 (we'll show TOC for H2-H4 by default)
+            if (level >= 2 && level <= 4)
+            {
+                headings.Add((level, id, text));
+            }
+        }
+
+        if (headings.Count == 0)
+            return string.Empty;
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("<nav class=\"toc-container bg-gray-50 border rounded-md p-4 mb-6\" aria-label=\"Table of contents\">");
+        sb.AppendLine("  <p class=\"font-semibold mb-2\">Contents</p>");
+
+        // Build nested list based on heading levels
+        int baseLevel = headings.Min(h => h.level);
+        int currentLevel = baseLevel;
+
+        sb.AppendLine("  <ul class=\"toc-list\">");
+
+        foreach (var h in headings)
+        {
+            while (h.level > currentLevel)
+            {
+                sb.AppendLine("    <ul>");
+                currentLevel++;
+            }
+
+            while (h.level < currentLevel)
+            {
+                sb.AppendLine("    </ul>");
+                currentLevel--;
+            }
+
+            sb.AppendLine($"    <li class=\"toc-item toc-h{h.level}\"><a class=\"toc-link text-sm text-blue-600 hover:underline\" href=\"#{h.id}\">{WebUtility.HtmlEncode(h.text)}</a></li>");
+        }
+
+        while (currentLevel > baseLevel)
+        {
+            sb.AppendLine("    </ul>");
+            currentLevel--;
+        }
+
+        sb.AppendLine("  </ul>");
+        sb.AppendLine("</nav>");
+
+        return sb.ToString();
     }
 
     private string GenerateExcerpt(string markdown, int maxLength = 200)
