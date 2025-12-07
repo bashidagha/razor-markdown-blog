@@ -37,7 +37,22 @@
                 {
                     <img src="@Model.Post.Image" alt="@Model.Post.Title" class="w-full h-64 object-cover rounded-lg mb-6" />
                 }
+                @if (!string.IsNullOrEmpty(Model.Post.Series))
+                {
+                    <div class="mb-3">
+                        <a asp-page="/Series" asp-route-slug="@Model.Post.SeriesSlug"
+                            class="inline-block text-sm bg-blue-50 text-blue-700 px-3 py-1 rounded-md border border-blue-100">@Model.Post.Series</a>
+                    </div>
+                }
                 <h1 class="text-4xl font-bold text-gray-900 mb-4">@Model.Post.Title</h1>
+                @if (!string.IsNullOrEmpty(Model.Post.Series))
+                {
+                    <div class="mb-4">
+                        <a asp-page="/Series" asp-route-slug="@Model.Post.SeriesSlug"
+                            class="inline-block text-sm px-3 py-1 bg-blue-50 text-blue-600 rounded-md">Series:
+                            @Model.Post.Series</a>
+                    </div>
+                }
                 <div class="flex items-center text-gray-600 space-x-4">
                     <span class="flex items-center">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"

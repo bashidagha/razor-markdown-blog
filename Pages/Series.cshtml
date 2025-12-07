@@ -1,0 +1,86 @@
+@page "/Series/{slug?}"
+@model SeriesModel
+@{
+    ViewData["Title"] = Model.CurrentSeries?.Name ?? "Series";
+}
+
+<div class="max-w-7xl mx-auto">
+    @if (Model.CurrentSeries != null)
+    {
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">@Model.CurrentSeries.Name</h1>
+            @if (!string.IsNullOrEmpty(Model.CurrentSeries.Description))
+            {
+                <p class="text-gray-600 mt-2">@Model.CurrentSeries.Description</p>
+            }
+        </div>
+
+        @if (Model.CurrentSeries.Posts.Any())
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @foreach (var post in Model.CurrentSeries.Posts)
+                {
+                    <article
+                        class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                        @if (!string.IsNullOrEmpty(post.Image))
+                        {
+                            <img src="@post.Image" alt="@post.Title" class="w-full h-48 object-cover" />
+                        }
+                        <div class="p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-3">
+                                <a asp-page="/Post" asp-route-slug="@post.Slug"
+                                    class="hover:text-blue-600 transition-colors">@post.Title</a>
+                            </h2>
+                            <p class="text-gray-600 mb-4">@post.Excerpt</p>
+                            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+                                <span>@post.Date.ToString("MMMM dd, yyyy")</span>
+                                <span>@post.Author</span>
+                            </div>
+                            <div class="text-center">
+                                <a asp-page="/Post" asp-route-slug="@post.Slug"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">Read</a>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-12">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">No posts yet in this series</h3>
+                <p class="text-gray-600">Check back soon for updates.</p>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">All Series</h1>
+        </div>
+
+        @if (Model.SeriesList.Any())
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @foreach (var s in Model.SeriesList)
+                {
+                    <article
+                        class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-2">
+                            <a asp-page="/Series" asp-route-slug="@s.Slug" class="hover:text-blue-600 transition-colors">@s.Name</a>
+                        </h2>
+                        <p class="text-gray-600 mb-4">@s.Description</p>
+                        <div class="text-sm text-gray-500">@s.Posts.Count post(s)</div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-12">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">No series yet</h3>
+                <p class="text-gray-600">Create a series by adding `series` frontmatter to posts.</p>
+            </div>
+        }
+    }
+</div>

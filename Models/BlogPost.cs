@@ -21,4 +21,14 @@ public class BlogPost
     public string Author { get; set; } = "Admin";
 
     public string Image { get; set; } = string.Empty;
+
+    // Series-related metadata (optional)
+    // The display name of the series this post belongs to (e.g. "Getting Started Series")
+    public string Series { get; set; } = string.Empty;
+
+    // Slug for the series (derived from Series) for linking
+    public string SeriesSlug { get; set; } = string.Empty;
+
+    // Optional index/position within the series (smaller means earlier)
+    public int? SeriesIndex { get; set; }
 }

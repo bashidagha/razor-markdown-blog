@@ -10,6 +10,8 @@ public interface IBlogService
     Task<List<BlogPost>> GetAllPostsAsync();
     Task<BlogPost?> GetPostBySlugAsync(string slug);
     Task RefreshPostsAsync();
+    Task<List<Series>> GetAllSeriesAsync();
+    Task<Series?> GetSeriesBySlugAsync(string slug);
 }
 
 public class BlogService : IBlogService
@@ -18,6 +20,7 @@ public class BlogService : IBlogService
     private readonly string _compiledPostsPath;
     private readonly object _lock = new object();
     private List<BlogPost> _posts = new();
+    private List<Series> _series = new();
     private bool _isLoaded = false;
 
     public BlogService(IWebHostEnvironment environment)
@@ -97,6 +100,30 @@ public class BlogService : IBlogService
         lock (_lock)
         {
             _posts = posts;
+            // Build series index
+            var seriesLookup = new Dictionary<string, Series>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var p in posts)
+            {
+                if (string.IsNullOrWhiteSpace(p.Series)) continue;
+                var slug = !string.IsNullOrWhiteSpace(p.SeriesSlug) ? p.SeriesSlug : GenerateSlug(p.Series);
+
+                if (!seriesLookup.TryGetValue(slug, out var s))
+                {
+                    s = new Series { Name = p.Series, Slug = slug };
+                    seriesLookup[slug] = s;
+                }
+
+                s.Posts.Add(p);
+            }
+
+            // Sort posts in each series by SeriesIndex then Date
+            foreach (var s in seriesLookup.Values)
+            {
+                s.Posts = s.Posts.OrderBy(p => p.SeriesIndex ?? int.MaxValue).ThenBy(p => p.Date).ToList();
+            }
+
+            _series = seriesLookup.Values.OrderBy(s => s.Name).ToList();
             _isLoaded = true;
         }
     }
@@ -137,6 +164,12 @@ public class BlogService : IBlogService
         var slug = GenerateSlug(title);
         var htmlContent = ConvertMarkdownToHtml(markdownContent);
 
+        // Parse optional series frontmatter
+        var seriesName = frontmatter.GetValueOrDefault("series") ?? string.Empty;
+        var seriesIndexStr = frontmatter.GetValueOrDefault("series_index") ?? string.Empty;
+        int? seriesIndex = null;
+        if (int.TryParse(seriesIndexStr, out var idx)) seriesIndex = idx;
+
         // Generate and insert TOC (after first H1 if present)
         var tocHtml = GenerateTocHtml(htmlContent);
         if (!string.IsNullOrWhiteSpace(tocHtml))
@@ -167,7 +200,27 @@ public class BlogService : IBlogService
             Excerpt = excerpt,
             Author = author,
             Image = image
+            ,
+            Series = seriesName,
+            SeriesSlug = string.IsNullOrWhiteSpace(seriesName) ? string.Empty : GenerateSlug(seriesName),
+            SeriesIndex = seriesIndex
         };
+    }
+
+    public async Task<List<Series>> GetAllSeriesAsync()
+    {
+        if (!_isLoaded)
+            await LoadPostsAsync();
+
+        return _series.OrderBy(s => s.Name).ToList();
+    }
+
+    public async Task<Series?> GetSeriesBySlugAsync(string slug)
+    {
+        if (!_isLoaded)
+            await LoadPostsAsync();
+
+        return _series.FirstOrDefault(s => s.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
     }
 
     private (Dictionary<string, string>?, string) ParseFrontmatter(string content)
