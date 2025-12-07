@@ -1,7 +1,7 @@
 @page "/Series/{slug?}"
 @model SeriesModel
 @{
-    ViewData["Title"] = Model.CurrentSeries?.Name ?? "Series";
+    ViewData["Title"] = Model.CurrentSeries?.Name ?? "سری مقالات";
 }
 
 <div class="max-w-7xl mx-auto">
@@ -38,7 +38,8 @@
                             </div>
                             <div class="text-center">
                                 <a asp-page="/Post" asp-route-slug="@post.Slug"
-                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">Read</a>
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">ادامه
+                                    مطلب</a>
                             </div>
                         </div>
                     </article>
@@ -48,15 +49,15 @@
         else
         {
             <div class="text-center py-12">
-                <h3 class="text-2xl font-semibold text-gray-900 mb-2">No posts yet in this series</h3>
-                <p class="text-gray-600">Check back soon for updates.</p>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">هنوز پستی در این مجموعه وجود ندارد</h3>
+                <p class="text-gray-600">به‌زودی به‌روزرسانی‌ها اضافه خواهند شد.</p>
             </div>
         }
     }
     else
     {
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900">All Series</h1>
+            <h1 class="text-4xl font-bold text-gray-900">همه مجموعه‌ها</h1>
         </div>
 
         @if (Model.SeriesList.Any())
@@ -70,7 +71,7 @@
                             <a asp-page="/Series" asp-route-slug="@s.Slug" class="hover:text-blue-600 transition-colors">@s.Name</a>
                         </h2>
                         <p class="text-gray-600 mb-4">@s.Description</p>
-                        <div class="text-sm text-gray-500">@s.Posts.Count post(s)</div>
+                        <div class="text-sm text-gray-500">@s.Posts.Count پست</div>
                     </article>
                 }
             </div>
@@ -78,8 +79,8 @@
         else
         {
             <div class="text-center py-12">
-                <h3 class="text-2xl font-semibold text-gray-900 mb-2">No series yet</h3>
-                <p class="text-gray-600">Create a series by adding `series` frontmatter to posts.</p>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">هنوز مجموعه‌ای وجود ندارد</h3>
+                <p class="text-gray-600">با افزودن فیلد `series` در فرانت‌متادر پست‌ها، یک مجموعه بسازید.</p>
             </div>
         }
     }

@@ -1,29 +1,29 @@
 ---
-title: "Example Series — Part 2: Next Steps"
+title: "مجموعه نمونه — بخش 2: مراحل بعدی"
 date: 2025-12-07
-author: "Example Author"
-series: "Example Series"
+author: "نویسنده نمونه"
+series: "مجموعه نمونه"
 series_index: 2
 image: "/images/blog/example-series-2.jpg"
 ---
 
-# Example Series — Part 2: Next Steps
+# مجموعه نمونه — بخش 2: مراحل بعدی
 
-This is the second part of the Example Series. It continues from the introduction and shows more detail.
+این بخش دوم مجموعه نمونه است. ادامه‌ای بر معرفی بوده و جزئیات بیشتری نمایش می‌دهد.
 
-## Recap
+## مرور
 
-We introduced the series and explained the frontmatter keys.
+ما مجموعه را معرفی کرده و کلیدهای فرانت‌مِیتر را توضیح دادیم.
 
-## Next steps
+## مراحل بعدی
 
-1. Add more posts to the series with increasing `series_index`.
-2. Optionally add `series_description` in a dedicated place if you want a longer description.
+1. افزودن پست‌های بیشتر به مجموعه با افزایش مقدار `series_index`.
+2. در صورت نیاز، افزودن `series_description` در جای مشخص برای توضیحات طولانی‌تر.
 
-### Deeper dive
+### بررسی عمیق‌تر
 
-You can also add images and extra metadata in frontmatter; the site will display the series badge on each post and list posts on the series page.
+همچنین می‌توانید تصاویر و متادیتای اضافی را در فرانت‌متر اضافه کنید؛ سایت نشان مجموعه را در هر پست نمایش می‌دهد و پست‌ها را در صفحه مجموعه فهرست می‌کند.
 
-## Finished
+## پایان
 
-That's it for the example series — two small posts to demonstrate how it works.
+این تمام موارد برای مجموعه نمونه است — دو پست کوچک برای نشان دادن نحوه کار.

@@ -1,49 +1,56 @@
----
 title: "Getting Started with Markdig: A Powerful Markdown Parser"
 date: "2025-12-05"
 author: "Admin"
 image: "/images/blog/markdig-hero.webp"
+
 ---
 
-# Getting Started with Markdig
+title: "شروع به کار با Markdig: یک پردازشگر قدرتمند مارک‌داون"
+date: "2025-12-05"
+author: "مدیر"
+image: "/images/blog/markdig-hero.webp"
 
-Markdig is a fast, powerful, and lightweight Markdown processor for .NET. It's designed to be fast, extensible, and standards-compliant.
+---
 
-## Why Choose Markdig?
+# شروع به کار با Markdig
 
-Markdig offers several advantages:
+Markdig یک پردازشگر مارک‌داون سریع، قدرتمند و سبک برای .NET است. این کتابخانه برای سرعت، قابلیت توسعه و تطابق با استانداردها طراحی شده است.
 
--   **Performance**: Extremely fast parsing and rendering
--   **Standards Compliance**: Follows CommonMark specifications
--   **Extensibility**: Easy to add custom extensions
--   **Safety**: Built-in XSS protection
+## چرا Markdig؟
 
-## Installation
+Markdig چندین مزیت ارائه می‌دهد:
 
-Installing Markdig is straightforward with NuGet:
+-   **عملکرد**: پردازش و رندر بسیار سریع
+-   **تطابق با استانداردها**: پیروی از مشخصات CommonMark
+-   **قابلیت توسعه**: افزودن افزونه‌های سفارشی ساده است
+-   **امنیت**: شامل محافظت‌های پایه‌ای در برابر XSS
+
+## نصب
+
+نصب Markdig با NuGet ساده است:
 
 ```bash
 Install-Package Markdig
 ```
 
-Or using the .NET CLI:
+یا با استفاده از CLI دات‌نت:
 
 ```bash
 dotnet add package Markdig
 ```
 
-## Basic Usage
+## استفاده ساده
 
-Here's how to use Markdig in your C# code:
+در اینجا نحوه استفاده از Markdig در کد C# آورده شده است:
 
 ```csharp
 using Markdig;
 
-// Simple markdown to HTML conversion
+// تبدیل ساده مارک‌داون به HTML
 string markdown = "# Hello World\n\nThis is a **bold** statement!";
 string html = Markdown.ToHtml(markdown);
 
-// With advanced extensions
+// با افزونه‌های پیشرفته
 var pipeline = new MarkdownPipelineBuilder()
     .UseAdvancedExtensions()
     .Build();
@@ -51,27 +58,27 @@ var pipeline = new MarkdownPipelineBuilder()
 string advancedHtml = Markdown.ToHtml(markdown, pipeline);
 ```
 
-## Available Extensions
+## افزونه‌های موجود
 
-Markdig comes with many built-in extensions:
+Markdig دارای بسیاری از افزونه‌های داخلی است:
 
-### Advanced Extensions
+### افزونه‌های پیشرفته
 
--   **Auto-identifier**: Automatically adds IDs to headings
--   **Custom Containers**: Create custom block containers
--   **Definition Lists**: Support for definition lists
--   **Emphasis Extra**: Extended emphasis syntax
--   **Figures**: Figure and figcaption support
--   **Footers**: Document footers
--   **Footnotes**: Footnote support
--   **Grid Tables**: Grid table syntax
--   **Mathematics**: LaTeX-style math expressions
--   **Media**: Automatic media embedding
--   **Pipe Tables**: Pipe-separated tables
--   **ListExtras**: Enhanced list features
--   **Yaml**: YAML frontmatter support
+-   **Auto-identifier**: به‌طور خودکار شناسه به سرفصل‌ها اضافه می‌کند
+-   **Custom Containers**: ایجاد کانتینرهای بلوکی سفارشی
+-   **Definition Lists**: پشتیبانی از فهرست‌های تعریفی
+-   **Emphasis Extra**: نگارش توسعه‌یافته‌ی تأکید
+-   **Figures**: پشتیبانی از figure و figcaption
+-   **Footers**: پاورقی‌های سند
+-   **Footnotes**: پشتیبانی از پانوشت
+-   **Grid Tables**: نگارش جدول شبکه‌ای
+-   **Mathematics**: عبارات ریاضی به سبک LaTeX
+-   **Media**: جاسازی خودکار رسانه
+-   **Pipe Tables**: جداول جداشده با خط لوله
+-   **ListExtras**: قابلیت‌های اضافی فهرست
+-   **Yaml**: پشتیبانی از فرانت‌متای YAML
 
-### Example with Tables
+### مثال با جداول
 
 ```markdown
 | Feature    | Status |
@@ -81,7 +88,7 @@ Markdig comes with many built-in extensions:
 | Safe       | ✅     |
 ```
 
-### Example with Code Fencing
+### مثال با بلوک کد
 
 ```javascript
 function greet(name) {
@@ -91,25 +98,25 @@ function greet(name) {
 greet("World");
 ```
 
-## Custom Extensions
+## افزونه‌های سفارشی
 
-You can create custom extensions for Markdig:
+می‌توانید افزونه‌های سفارشی برای Markdig ایجاد کنید:
 
 ```csharp
 public class MyCustomExtension : IMarkdownExtension
 {
     public void Setup(MarkdownPipelineBuilder pipeline)
     {
-        // Add your custom processing
+        // افزودن پردازش سفارشی
     }
 
     public void Setup(MarkdownParser parser)
     {
-        // Add custom parsers
+        // افزودن پارسرهای سفارشی
     }
 }
 ```
 
 ---
 
-Markdig is an excellent choice for any .NET project that needs to process Markdown content. Its combination of speed, features, and extensibility makes it one of the best Markdown parsers available for .NET.
+Markdig انتخاب بسیار خوبی برای هر پروژه .NET است که نیاز به پردازش محتوای مارک‌داون دارد. ترکیب سرعت، امکانات و قابلیت توسعه آن را به یکی از بهترین پردازشگرهای مارک‌داون برای .NET تبدیل می‌کند.

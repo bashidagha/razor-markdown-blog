@@ -1,29 +1,29 @@
 ---
-title: "Example Series — Part 1: Introduction"
+title: "مجموعه نمونه — بخش 1: معرفی"
 date: 2025-12-07
-author: "Example Author"
-series: "Example Series"
+author: "نویسنده نمونه"
+series: "مجموعه نمونه"
 series_index: 1
 image: "/images/blog/example-series-1.jpg"
 ---
 
-# Example Series — Part 1: Introduction
+# مجموعه نمونه — بخش 1: معرفی
 
-Welcome to the Example Series. This short series demonstrates how to group posts into a series and show them on the site.
+به مجموعه نمونه خوش‌آمدید. این مجموعه کوتاه نشان می‌دهد چگونه پست‌ها را در یک مجموعه گروه‌بندی کرده و در سایت نمایش دهیم.
 
-## Why this series?
+## چرا این مجموعه؟
 
-We want to show how a series groups content and provides navigation for readers.
+ما می‌خواهیم نشان دهیم چگونه یک مجموعه محتوا را گروه‌بندی می‌کند و ناوبری مناسبی برای خوانندگان فراهم می‌آورد.
 
-## What you'll learn
+## آنچه می‌آموزید
 
-- How frontmatter `series` and `series_index` are used.
-- How posts are ordered within a series.
+-   چگونه فیلدهای فرانت‌مِی‌تر `series` و `series_index` استفاده می‌شوند.
+-   چگونه پست‌ها درون یک مجموعه مرتب می‌شوند.
 
-### Quick start
+### شروع سریع
 
-Create multiple posts with the same `series` name and set `series_index` to control order.
+چند پست با نام `series` مشابه ایجاد کرده و `series_index` را برای کنترل ترتیب تنظیم کنید.
 
-## Notes
+## یادداشت‌ها
 
-This is the first entry. Continue to the next part to see an example of a multi-part post.
+این اولین ورودی است. برای دیدن مثال چندبخشی به بخش بعدی مراجعه کنید.

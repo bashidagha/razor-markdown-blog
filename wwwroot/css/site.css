@@ -51,6 +51,14 @@
 html {
     scroll-behavior: smooth;
 }
+/* Local Vazirmatn variable font (served from wwwroot/assets/) */
+@font-face {
+    font-family: "Vazirmatn";
+    src: url("/assets/Vazirmatn[wght].ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
 *,
 :after,
 :before {
@@ -185,6 +193,9 @@ html {
 body {
     margin: 0;
     line-height: inherit;
+    font-family: "Vazirmatn", ui-sans-serif, system-ui, -apple-system,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Naskh Arabic",
+        sans-serif;
 }
 hr {
     height: 0;
@@ -385,6 +396,50 @@ video {
     line-height: 1.25;
     --tw-text-opacity: 1;
     color: rgb(17 24 39 / var(--tw-text-opacity, 1));
+    /* RTL adjustments for Persian (fa-IR) */
+    [dir="rtl"] {
+        direction: rtl;
+    }
+
+    [dir="rtl"] body {
+        text-align: right;
+    }
+
+    [dir="rtl"] .prose {
+        direction: rtl;
+        text-align: right;
+    }
+
+    /* Swap common margin utilities for better RTL visuals */
+    [dir="rtl"] .mr-2 {
+        margin-right: 0 !important;
+        margin-left: 0.5rem !important;
+    }
+    [dir="rtl"] .ml-2 {
+        margin-left: 0 !important;
+        margin-right: 0.5rem !important;
+    }
+    [dir="rtl"] .mr-4 {
+        margin-right: 0 !important;
+        margin-left: 1rem !important;
+    }
+    [dir="rtl"] .ml-4 {
+        margin-left: 0 !important;
+        margin-right: 1rem !important;
+    }
+    [dir="rtl"] .space-x-2 > * + * {
+        margin-left: 0 !important;
+        margin-right: 0.5rem !important;
+    }
+    [dir="rtl"] .space-x-4 > * + * {
+        margin-left: 0 !important;
+        margin-right: 1rem !important;
+    }
+
+    /* Mirror SVG icons such as arrows for RTL */
+    [dir="rtl"] svg {
+        transform: scaleX(-1);
+    }
 }
 .prose :where(h2):not(:where([class~="not-prose"], .not-prose *)) {
     margin-bottom: 1rem;

@@ -1,27 +1,27 @@
 ---
-title: "Welcome to My Markdown Blog"
+title: "خوش‌آمدید به وبلاگ مارک‌داون من"
 date: "2025-12-06"
-author: "Admin"
+author: "مدیر"
 image: "/images/blog/welcome-hero.webp"
 ---
 
-# Welcome to My Markdown Blog
+# خوش‌آمدید به وبلاگ مارک‌داون من
 
-This is the first post on my new blog built with ASP.NET Core and Markdig!
+این اولین پست در وبلاگ جدید من است که با ASP.NET Core و Markdig ساخته شده است!
 
-## What is this blog?
+## این وبلاگ چیست؟
 
-This blog demonstrates how to create a static site generator using:
+این وبلاگ نشان می‌دهد چگونه می‌توان یک تولیدکننده سایت استاتیک ساخت با استفاده از:
 
--   **ASP.NET Core Razor Pages** for the web framework
--   **Markdig** for markdown processing
--   **Build-time conversion** for performance
+-   **ASP.NET Core Razor Pages** برای چارچوب وب
+-   **Markdig** برای پردازش مارک‌داون
+-   **تبدیل در زمان ساخت** برای عملکرد بهتر
 
-## Features
+## ویژگی‌ها
 
-Here are some of the features this blog supports:
+در اینجا برخی از ویژگی‌هایی که این وبلاگ پشتیبانی می‌کند آمده است:
 
-### Code Highlighting
+### برجسته‌سازی کد
 
 ```csharp
 using System;
@@ -38,20 +38,20 @@ namespace MyMarkdownBlog
 }
 ```
 
-### Lists and Formatting
+### فهرست‌ها و قالب‌بندی
 
--   **Bold text** for emphasis
--   _Italic text_ for highlights
--   `Inline code` for small snippets
+-   **متن بولد** برای تأکید
+-   _متن ایتالیک_ برای برجسته‌سازی
+-   `کد درون‌خطی` برای قطعات کوچک کد
 
-### Links and Images
+### لینک‌ها و تصاویر
 
-Check out the [ASP.NET Core documentation](https://learn.microsoft.com/aspnet/core) for more information.
+برای اطلاعات بیشتر به [مستندات ASP.NET Core](https://learn.microsoft.com/aspnet/core) مراجعه کنید.
 
-### Blockquotes
+### نقل‌قول‌ها
 
-> This is a blockquote that demonstrates how to highlight important information in your blog posts.
+> این یک نقل‌قول است که نشان می‌دهد چگونه می‌توان اطلاعات مهم را در پست‌های وبلاگ برجسته کرد.
 
 ---
 
-Stay tuned for more posts about web development, ASP.NET Core, and markdown processing!
+منتظر پست‌های بیشتر در مورد توسعه وب، ASP.NET Core و پردازش مارک‌داون باشید!
