@@ -162,34 +162,77 @@ public class BlogService : IBlogService
         }
 
         var slug = GenerateSlug(title);
-        var htmlContent = ConvertMarkdownToHtml(markdownContent);
 
-        // Parse optional series frontmatter
-        var seriesName = frontmatter.GetValueOrDefault("series") ?? string.Empty;
-        var seriesIndexStr = frontmatter.GetValueOrDefault("series_index") ?? string.Empty;
-        int? seriesIndex = null;
-        if (int.TryParse(seriesIndexStr, out var idx)) seriesIndex = idx;
+        // Check for precompiled HTML first
+        var compiledPath = Path.Combine(_compiledPostsPath, $"{slug}.html");
+        string htmlContent;
 
-        // Generate and insert TOC (after first H1 if present)
-        var tocHtml = GenerateTocHtml(htmlContent);
-        if (!string.IsNullOrWhiteSpace(tocHtml))
+        if (File.Exists(compiledPath))
         {
-            var h1Regex = new Regex("<h1\\b.*?>.*?</h1>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-            if (h1Regex.IsMatch(htmlContent))
+            // Read compiled HTML. If it's a full document, try to extract the <body> contents.
+            htmlContent = await File.ReadAllTextAsync(compiledPath);
+            var bodyMatch = Regex.Match(htmlContent, "<body.*?>([\\s\\S]*?)</body>", RegexOptions.IgnoreCase);
+            if (bodyMatch.Success && bodyMatch.Groups.Count > 1)
             {
-                htmlContent = h1Regex.Replace(htmlContent, m => m.Value + "\n" + tocHtml, 1);
-            }
-            else
-            {
-                htmlContent = tocHtml + "\n" + htmlContent;
+                htmlContent = bodyMatch.Groups[1].Value;
             }
         }
+        else
+        {
+            htmlContent = ConvertMarkdownToHtml(markdownContent);
 
-        var excerpt = GenerateExcerpt(markdownContent);
+            // Parse optional series frontmatter
+            var seriesName = frontmatter.GetValueOrDefault("series") ?? string.Empty;
+            var seriesIndexStr = frontmatter.GetValueOrDefault("series_index") ?? string.Empty;
+            int? seriesIndex = null;
+            if (int.TryParse(seriesIndexStr, out var idx)) seriesIndex = idx;
 
-        // Save compiled HTML
-        var compiledPath = Path.Combine(_compiledPostsPath, $"{slug}.html");
-        await File.WriteAllTextAsync(compiledPath, htmlContent);
+            var excerpt = GenerateExcerpt(markdownContent);
+
+            // Generate and insert TOC (after first H1 if present)
+            var tocHtml = GenerateTocHtml(htmlContent);
+            if (!string.IsNullOrWhiteSpace(tocHtml))
+            {
+                var h1Regex = new Regex("<h1\\b.*?>.*?</h1>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                if (h1Regex.IsMatch(htmlContent))
+                {
+                    htmlContent = h1Regex.Replace(htmlContent, m => m.Value + "\n" + tocHtml, 1);
+                }
+                else
+                {
+                    htmlContent = tocHtml + "\n" + htmlContent;
+                }
+            }
+
+            // Ensure compiled directory exists then save compiled HTML fragment
+            if (!Directory.Exists(_compiledPostsPath)) Directory.CreateDirectory(_compiledPostsPath);
+            await File.WriteAllTextAsync(compiledPath, htmlContent);
+
+            return new BlogPost
+            {
+                Title = title,
+                Slug = slug,
+                Date = date,
+                Content = htmlContent,
+                Excerpt = excerpt,
+                Author = author,
+                Image = image
+                ,
+                Series = seriesName,
+                SeriesSlug = string.IsNullOrWhiteSpace(seriesName) ? string.Empty : GenerateSlug(seriesName),
+                SeriesIndex = seriesIndex
+            };
+        }
+
+        // If we reached here, the compiled file existed and htmlContent was loaded above.
+
+        // Parse optional series frontmatter (still needed for metadata indexing)
+        var seriesNameFallback = frontmatter.GetValueOrDefault("series") ?? string.Empty;
+        var seriesIndexStrFallback = frontmatter.GetValueOrDefault("series_index") ?? string.Empty;
+        int? seriesIndexFallback = null;
+        if (int.TryParse(seriesIndexStrFallback, out var idx2)) seriesIndexFallback = idx2;
+
+        var excerptFallback = GenerateExcerpt(markdownContent);
 
         return new BlogPost
         {
@@ -197,13 +240,12 @@ public class BlogService : IBlogService
             Slug = slug,
             Date = date,
             Content = htmlContent,
-            Excerpt = excerpt,
+            Excerpt = excerptFallback,
             Author = author,
-            Image = image
-            ,
-            Series = seriesName,
-            SeriesSlug = string.IsNullOrWhiteSpace(seriesName) ? string.Empty : GenerateSlug(seriesName),
-            SeriesIndex = seriesIndex
+            Image = image,
+            Series = seriesNameFallback,
+            SeriesSlug = string.IsNullOrWhiteSpace(seriesNameFallback) ? string.Empty : GenerateSlug(seriesNameFallback),
+            SeriesIndex = seriesIndexFallback
         };
     }
 

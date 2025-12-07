@@ -12,4 +12,9 @@
     <PackageReference Include="Markdig" Version="0.44.0" />
   </ItemGroup>
 
+  <Target Name="GenerateMarkdownHtml" BeforeTargets="BeforeBuild;BeforePublish">
+    <Message Importance="high" Text="Generating compiled HTML from markdown posts..." />
+    <Exec Command='dotnet run --project "tools/MarkdownProcessor/MarkdownProcessor.csproj" -- "posts" "wwwroot/compiled-posts"' />
+  </Target>
+
 </Project>
