@@ -1,14 +1,7 @@
-title: "Getting Started with Markdig: A Powerful Markdown Parser"
+title: "استفاده از zustand برای بهبود مدیریت state ها"
 date: "2025-12-05"
-author: "Admin"
-image: "/images/blog/markdig-hero.webp"
-
----
-
-title: "شروع به کار با Markdig: یک پردازشگر قدرتمند مارک‌داون"
-date: "2025-12-05"
-author: "مدیر"
-image: "/images/blog/markdig-hero.webp"
+author: "فرشید"
+image: "/images/blog/zustand.webp"
 
 ---
 
