@@ -15,7 +15,8 @@
                 <nav class="toc-container bg-gray-50 border rounded-md p-4 mb-6" aria-label="Table of contents">
   <p class="font-semibold mb-2">Contents</p>
   <ul class="toc-list">
-    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#markdig-1">چرا Markdig؟</a></li>
+    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand">چرا zustand ؟</a></li>
+    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-1">فلسفه عملکردی zustand</a></li>
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section">نصب</a></li>
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-1">استفاده ساده</a></li>
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-2">افزونه‌های موجود</a></li>
@@ -28,9 +29,16 @@
   </ul>
 </nav>
 
-<h1 id="markdig">شروع به کار با Markdig</h1>
-<p>Markdig یک پردازشگر مارک‌داون سریع، قدرتمند و سبک برای .NET است. این کتابخانه برای سرعت، قابلیت توسعه و تطابق با استانداردها طراحی شده است.</p>
-<h2 id="markdig-1">چرا Markdig؟</h2>
+<h2 id="zustand">چرا zustand ؟</h2>
+<p>وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای سناریوهای مختلف و کاربری‌های مختلفی ایجاد میشه که توی مقاله فلان راجه بهش مفصل صحبت کردیم.
+همونطور که اونجا گفتیم، برای مدیریت s</p>
+<p>کار با zustand خیلی راحت و باحاله، الو از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟</p>
+<h2 id="zustand-1">فلسفه عملکردی zustand</h2>
+<p>وقتی شما با zustand یک store در جایی می سازی در حقیقت در run-time جاوااسکریپت یه محدوده ای می‌سازی که داخلش چیزهایی که می‌خوای رو ذخیره می‌کنی. یعنی یه چیزی شبیه این شکل زیری</p>
+<p><img src="/images/assets/zustand1.webp" alt="Zustand run-time assets" /></p>
+<p>اول بگم ‌lifecycle این store کاملا به ‌‌‌run-time شما بستگی داره یعنی اگر صفحه رو reload کنید قاعدتا این store پاک میشه مگر اینکه جای دیگه ای هم persist بشه که موضوع بحث ما فعلا نیست.
+همونطور که توی شکل بالام مشخصه اپلیکیشن شما هر حرکتی بزنه دخلی(!) به این store به طور معمول نداره جون space یا فضای حافظه و run-time شون جداست.</p>
+<p>حالا از این ببعدش جالب میشه، شما وقتی zustand رو به طور مثال در برنامه react تون استفاده می‌کنید یه wrapper ای از جنس stateهای react دورش ایجاد میشه که فرآیندهای آپدیت و rendering در react بدین وسیله handle میشه.</p>
 <p>Markdig چندین مزیت ارائه می‌دهد:</p>
 <ul>
 <li><strong>عملکرد</strong>: پردازش و رندر بسیار سریع</li>
