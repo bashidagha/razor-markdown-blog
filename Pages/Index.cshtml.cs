@@ -26,5 +26,6 @@ public class IndexModel : PageModel
 
         // Set about me content
         AboutMeContent = "Welcome to my personal blog! I'm a passionate developer who loves sharing knowledge and experiences about technology, programming, and software development. Here you'll find articles, tutorials, and insights on various topics in the tech world.";
+        AboutMeContent = "من فرشید کریمی هستم، توسعه‌دهنده نرم‌افزار با علاقه‌مندی به اشتراک‌گذاری دانش و تجربیات در زمینه فناوری و برنامه‌نویسی. در این وبلاگ، مقالات، آموزش‌ها و دیدگاه‌هایی در مورد موضوعات مختلف دنیای فناوری خواهید یافت.";
     }
 }
