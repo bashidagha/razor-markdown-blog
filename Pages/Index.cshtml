@@ -7,7 +7,7 @@
 <!-- Recent Blog Posts Section -->
 <section class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
+        <div class="mb-12">
             <h2 class="text-3xl font-bold text-gray-900 mb-4">پست‌های اخیر وبلاگ</h2>
             <p class="text-lg text-gray-600">آخرین مقالات و آموزش‌ها را ببینید</p>
         </div>
@@ -53,10 +53,12 @@
                                 <a asp-page="/Post" asp-route-slug="@post.Slug"
                                     class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">
                                     ادامه مطلب
-                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                    <svg width="24" class="size-4 mr-2" height="24" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M5 12l14 0" />
+                                        <path d="M5 12l6 6" />
+                                        <path d="M5 12l6 -6" />
                                     </svg>
                                 </a>
                             </div>
@@ -68,10 +70,12 @@
                 <a asp-page="/Blog"
                     class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors">
                     مشاهده همه پست‌ها
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
-                        </path>
+                    <svg width="24" height="24" class="size-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M5 12l14 0" />
+                        <path d="M5 12l6 6" />
+                        <path d="M5 12l6 -6" />
                     </svg>
                 </a>
             </div>
@@ -96,9 +100,9 @@
             <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
                 <div class="flex-shrink-0">
                     <img src="https://my-portfilio-beta.vercel.app/farshid.jpg" alt="Profile"
-                        class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                        class="size-16 rounded-full object-cover border-4 border-white shadow-lg">
                 </div>
-                <div class="flex-1 text-center md:text-left">
+                <div class="flex-1 text-center md:text-left p-4">
                     <p class="text-lg text-gray-700 leading-relaxed mb-6">
                         @Model.AboutMeContent
                     </p>
