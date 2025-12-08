@@ -2,9 +2,9 @@
 title: "مجموعه نمونه — بخش 1: معرفی"
 date: 2025-12-07
 author: "نویسنده نمونه"
-series: "مجموعه نمونه"
+series: "تست‌نویسی در javascript/typescript"
 series_index: 1
-image: "/images/blog/example-series-1.jpg"
+image: "/images/blog/testing-title.webp"
 ---
 
 # مجموعه نمونه — بخش 1: معرفی

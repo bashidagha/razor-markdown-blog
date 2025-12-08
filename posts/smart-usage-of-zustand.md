@@ -1,8 +1,8 @@
+---
 title: "استفاده از zustand برای بهبود مدیریت state ها"
 date: "2025-12-05"
 author: "فرشید"
 image: "/images/blog/zustand.webp"
-
 ---
 
 # شروع به کار با Markdig
