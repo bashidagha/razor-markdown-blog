@@ -17,15 +17,8 @@
   <ul class="toc-list">
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand">چرا zustand ؟</a></li>
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-1">فلسفه عملکردی zustand</a></li>
-    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section">نصب</a></li>
-    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-1">استفاده ساده</a></li>
-    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-2">افزونه‌های موجود</a></li>
-    <ul>
-    <li class="toc-item toc-h3"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-3">افزونه‌های پیشرفته</a></li>
-    <li class="toc-item toc-h3"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-4">مثال با جداول</a></li>
-    <li class="toc-item toc-h3"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-5">مثال با بلوک کد</a></li>
-    </ul>
-    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section-6">افزونه‌های سفارشی</a></li>
+    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-2">اولین گام zustand</a></li>
+    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section">منابع</a></li>
   </ul>
 </nav>
 
@@ -39,84 +32,34 @@
 <p>اول بگم ‌lifecycle این store کاملا به ‌‌‌run-time شما بستگی داره یعنی اگر صفحه رو reload کنید قاعدتا این store پاک میشه مگر اینکه جای دیگه ای هم persist بشه که موضوع بحث ما فعلا نیست.
 همونطور که توی شکل بالام مشخصه اپلیکیشن شما هر حرکتی بزنه دخلی(!) به این store به طور معمول نداره جون space یا فضای حافظه و run-time شون جداست.</p>
 <p>حالا از این ببعدش جالب میشه، شما وقتی zustand رو به طور مثال در برنامه react تون استفاده می‌کنید یه wrapper ای از جنس stateهای react دورش ایجاد میشه که فرآیندهای آپدیت و rendering در react بدین وسیله handle میشه.</p>
-<p>Markdig چندین مزیت ارائه می‌دهد:</p>
+<p>شکل زیر تقریبی از چیزی است که اتفاق می‌افته. به عبارتی برای اینکه react بتونه rendering رو برعهده بگیره نیازی به چیزی که براش آشناست یعنی همون stateها داره. حالا ما هربار که useStore رو استفاده کنیم(بعدا خواهیم گفت)، در حقیقت کنترل re-render و render رو برعهده می‌گیریم.</p>
+<p><img src="/images/assets/zustand2.webp" alt="Zustand React model" /></p>
+<h2 id="zustand-2">اولین گام zustand</h2>
+<p>Zustand یه کتابخونهٔ مدیریت state کم‌حجم ولی واقعاً پرقدرتِ. برای ساختن state کافیه متد <code>create</code> رو صدا بزنید:</p>
+<pre><code class="language-javascript">import { create } from &quot;zustand&quot;;
+</code></pre>
+<p>ببینید، توضیح دادن گاهی سخته — نشون دادن راحت‌تر و گویا‌تره:</p>
+<pre><code class="language-typescript">export const useTasksStore = create&lt;TasksState&gt;((set) =&gt; ({
+    tasks,
+    setTasks: (arg: Task[] | ((tasks: Task[]) =&gt; Task[])) =&gt; {
+        set((state) =&gt; {
+            return {
+                tasks: typeof arg === &quot;function&quot; ? arg(state.tasks) : arg,
+            };
+        });
+    },
+    currentView: &quot;list&quot;,
+    setCurrentView: (newView: TasksView) =&gt; set({ currentView: newView }),
+    currentFilter: &quot;&quot;,
+    setCurrentFilter: (newFilter: string) =&gt; set({ currentFilter: newFilter }),
+}));
+</code></pre>
+<p>ما به <code>create</code> یه تابع می‌دیم که همون state رو برمی‌گردونه. همین — ساده و بی‌پیرایه. اون تابع معمولاً یه آرگومان می‌گیره (معمولاً <code>set</code>) که باهاش می‌تونید state رو به‌روزرسانی کنید؛ هم به‌صورت setter ساده، هم با توجه به مقدار قبلی که خیلی وقت‌ها مفیده.</p>
+<h2 id="section">منابع</h2>
 <ul>
-<li><strong>عملکرد</strong>: پردازش و رندر بسیار سریع</li>
-<li><strong>تطابق با استانداردها</strong>: پیروی از مشخصات CommonMark</li>
-<li><strong>قابلیت توسعه</strong>: افزودن افزونه‌های سفارشی ساده است</li>
-<li><strong>امنیت</strong>: شامل محافظت‌های پایه‌ای در برابر XSS</li>
+<li><a href="https://frontendmasters.com/blog/introducing-zustand/">Introducing Zustand</a></li>
+<li><a href="https://zustand.docs.pmnd.rs/">Zustand Documentation</a></li>
 </ul>
-<h2 id="section">نصب</h2>
-<p>نصب Markdig با NuGet ساده است:</p>
-<pre><code class="language-bash">Install-Package Markdig
-</code></pre>
-<p>یا با استفاده از CLI دات‌نت:</p>
-<pre><code class="language-bash">dotnet add package Markdig
-</code></pre>
-<h2 id="section-1">استفاده ساده</h2>
-<p>در اینجا نحوه استفاده از Markdig در کد C# آورده شده است:</p>
-<pre><code class="language-csharp">using Markdig;
-
-// تبدیل ساده مارک‌داون به HTML
-string markdown = &quot;# Hello World\n\nThis is a **bold** statement!&quot;;
-string html = Markdown.ToHtml(markdown);
-
-// با افزونه‌های پیشرفته
-var pipeline = new MarkdownPipelineBuilder()
-    .UseAdvancedExtensions()
-    .Build();
-
-string advancedHtml = Markdown.ToHtml(markdown, pipeline);
-</code></pre>
-<h2 id="section-2">افزونه‌های موجود</h2>
-<p>Markdig دارای بسیاری از افزونه‌های داخلی است:</p>
-<h3 id="section-3">افزونه‌های پیشرفته</h3>
-<ul>
-<li><strong>Auto-identifier</strong>: به‌طور خودکار شناسه به سرفصل‌ها اضافه می‌کند</li>
-<li><strong>Custom Containers</strong>: ایجاد کانتینرهای بلوکی سفارشی</li>
-<li><strong>Definition Lists</strong>: پشتیبانی از فهرست‌های تعریفی</li>
-<li><strong>Emphasis Extra</strong>: نگارش توسعه‌یافته‌ی تأکید</li>
-<li><strong>Figures</strong>: پشتیبانی از figure و figcaption</li>
-<li><strong>Footers</strong>: پاورقی‌های سند</li>
-<li><strong>Footnotes</strong>: پشتیبانی از پانوشت</li>
-<li><strong>Grid Tables</strong>: نگارش جدول شبکه‌ای</li>
-<li><strong>Mathematics</strong>: عبارات ریاضی به سبک LaTeX</li>
-<li><strong>Media</strong>: جاسازی خودکار رسانه</li>
-<li><strong>Pipe Tables</strong>: جداول جداشده با خط لوله</li>
-<li><strong>ListExtras</strong>: قابلیت‌های اضافی فهرست</li>
-<li><strong>Yaml</strong>: پشتیبانی از فرانت‌متای YAML</li>
-</ul>
-<h3 id="section-4">مثال با جداول</h3>
-<pre><code class="language-markdown">| Feature    | Status |
-| ---------- | ------ |
-| Fast       | ✅     |
-| Extensible | ✅     |
-| Safe       | ✅     |
-</code></pre>
-<h3 id="section-5">مثال با بلوک کد</h3>
-<pre><code class="language-javascript">function greet(name) {
-    console.log(`Hello, ${name}!`);
-}
-
-greet(&quot;World&quot;);
-</code></pre>
-<h2 id="section-6">افزونه‌های سفارشی</h2>
-<p>می‌توانید افزونه‌های سفارشی برای Markdig ایجاد کنید:</p>
-<pre><code class="language-csharp">public class MyCustomExtension : IMarkdownExtension
-{
-    public void Setup(MarkdownPipelineBuilder pipeline)
-    {
-        // افزودن پردازش سفارشی
-    }
-
-    public void Setup(MarkdownParser parser)
-    {
-        // افزودن پارسرهای سفارشی
-    }
-}
-</code></pre>
-<hr />
-<p>Markdig انتخاب بسیار خوبی برای هر پروژه .NET است که نیاز به پردازش محتوای مارک‌داون دارد. ترکیب سرعت، امکانات و قابلیت توسعه آن را به یکی از بهترین پردازشگرهای مارک‌داون برای .NET تبدیل می‌کند.</p>
 
         </div>
     </article>

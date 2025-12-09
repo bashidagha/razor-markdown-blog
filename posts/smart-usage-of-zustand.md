@@ -7,10 +7,14 @@ image: "/images/blog/zustand.webp"
 
 ## چرا zustand ؟
 
-وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای سناریوهای مختلف و کاربری‌های مختلفی ایجاد میشه که توی مقاله فلان راجه بهش مفصل صحبت کردیم.
-همونطور که اونجا گفتیم، برای مدیریت s
+وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای میشه نمیشه یه نسخه برای همه اپلیکیشن‌ها پیچید، بعضی وقت ها stick شدن به همون امکانات react مثل Context API جوابه و بعضی وقتها نیاز به کتابخانون هایی مجزا برای مدیریت stateها داریم. درباره اینکه استراتژی مناسب برای این موضع چیه، انشالله توی یه پست مجزا صحبت می کنیم ولی به عنوان یه rule of thumb باید بگم، این دو نکته می تونه به شما بگه که شاید وقتش باشه که به یک کتابخونه مدیریت state مجزا فکر کنید.
 
-کار با zustand خیلی راحت و باحاله، الو از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟
+-   **تعداد زیاد state ها در Context API**
+-   **نرخ بالای بروزرسانی state ها در کامپوننت**
+
+البته core react دائما در حال توسعه است و مواردی مثل react compiler می تونه تا حدودی شرایط رو تغییر بده.
+
+خب zustand قطعا توی دسته کتابخونه های بیرونی قرار می گیره، کار با zustand خیلی راحت و مشابه react عه، اول از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟
 
 ## فلسفه عملکردی zustand
 
@@ -27,105 +31,36 @@ image: "/images/blog/zustand.webp"
 
 ![Zustand React model](/images/assets/zustand2.webp)
 
-Markdig چندین مزیت ارائه می‌دهد:
+## اولین گام zustand
 
--   **عملکرد**: پردازش و رندر بسیار سریع
--   **تطابق با استانداردها**: پیروی از مشخصات CommonMark
--   **قابلیت توسعه**: افزودن افزونه‌های سفارشی ساده است
--   **امنیت**: شامل محافظت‌های پایه‌ای در برابر XSS
-
-## نصب
-
-نصب Markdig با NuGet ساده است:
-
-```bash
-Install-Package Markdig
-```
-
-یا با استفاده از CLI دات‌نت:
-
-```bash
-dotnet add package Markdig
-```
-
-## استفاده ساده
-
-در اینجا نحوه استفاده از Markdig در کد C# آورده شده است:
-
-```csharp
-using Markdig;
-
-// تبدیل ساده مارک‌داون به HTML
-string markdown = "# Hello World\n\nThis is a **bold** statement!";
-string html = Markdown.ToHtml(markdown);
-
-// با افزونه‌های پیشرفته
-var pipeline = new MarkdownPipelineBuilder()
-    .UseAdvancedExtensions()
-    .Build();
-
-string advancedHtml = Markdown.ToHtml(markdown, pipeline);
-```
-
-## افزونه‌های موجود
-
-Markdig دارای بسیاری از افزونه‌های داخلی است:
-
-### افزونه‌های پیشرفته
-
--   **Auto-identifier**: به‌طور خودکار شناسه به سرفصل‌ها اضافه می‌کند
--   **Custom Containers**: ایجاد کانتینرهای بلوکی سفارشی
--   **Definition Lists**: پشتیبانی از فهرست‌های تعریفی
--   **Emphasis Extra**: نگارش توسعه‌یافته‌ی تأکید
--   **Figures**: پشتیبانی از figure و figcaption
--   **Footers**: پاورقی‌های سند
--   **Footnotes**: پشتیبانی از پانوشت
--   **Grid Tables**: نگارش جدول شبکه‌ای
--   **Mathematics**: عبارات ریاضی به سبک LaTeX
--   **Media**: جاسازی خودکار رسانه
--   **Pipe Tables**: جداول جداشده با خط لوله
--   **ListExtras**: قابلیت‌های اضافی فهرست
--   **Yaml**: پشتیبانی از فرانت‌متای YAML
-
-### مثال با جداول
-
-```markdown
-| Feature    | Status |
-| ---------- | ------ |
-| Fast       | ✅     |
-| Extensible | ✅     |
-| Safe       | ✅     |
-```
-
-### مثال با بلوک کد
+Zustand یه کتابخونهٔ مدیریت state کم‌حجم ولی واقعاً پرقدرتِ. برای ساختن state کافیه متد `create` رو صدا بزنید:
 
 ```javascript
-function greet(name) {
-    console.log(`Hello, ${name}!`);
-}
-
-greet("World");
+import { create } from "zustand";
 ```
 
-## افزونه‌های سفارشی
+حالا store رو populate می‌کنیم:
 
-می‌توانید افزونه‌های سفارشی برای Markdig ایجاد کنید:
-
-```csharp
-public class MyCustomExtension : IMarkdownExtension
-{
-    public void Setup(MarkdownPipelineBuilder pipeline)
-    {
-        // افزودن پردازش سفارشی
-    }
-
-    public void Setup(MarkdownParser parser)
-    {
-        // افزودن پارسرهای سفارشی
-    }
-}
+```typescript
+export const useTasksStore = create<TasksState>((set) => ({
+    tasks,
+    setTasks: (arg: Task[] | ((tasks: Task[]) => Task[])) => {
+        set((state) => {
+            return {
+                tasks: typeof arg === "function" ? arg(state.tasks) : arg,
+            };
+        });
+    },
+    currentView: "list",
+    setCurrentView: (newView: TasksView) => set({ currentView: newView }),
+    currentFilter: "",
+    setCurrentFilter: (newFilter: string) => set({ currentFilter: newFilter }),
+}));
 ```
 
----
+همونطور که می‌بینید تابع ‌create یه تابع به عنوان آرگومان خودش می‌گیره. این تابع یک ‌‌set داره که می‌تونیم ازش برای ‌set موارد داخل ‌store مون استفاده کنیم.
 
-Markdig انتخاب بسیار خوبی برای هر پروژه .NET است که نیاز به پردازش محتوای مارک‌داون دارد. ترکیب سرعت، امکانات و قابلیت توسعه آن را به یکی از بهترین پردازشگرهای مارک‌داون برای .NET تبدیل می‌کند.
+## منابع
+
+-   [Introducing Zustand](https://frontendmasters.com/blog/introducing-zustand/)
+-   [Zustand Documentation](https://zustand.docs.pmnd.rs/)
