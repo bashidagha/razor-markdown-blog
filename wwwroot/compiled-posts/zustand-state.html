@@ -23,9 +23,13 @@
 </nav>
 
 <h2 id="zustand">چرا zustand ؟</h2>
-<p>وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای سناریوهای مختلف و کاربری‌های مختلفی ایجاد میشه که توی مقاله فلان راجه بهش مفصل صحبت کردیم.
-همونطور که اونجا گفتیم، برای مدیریت s</p>
-<p>کار با zustand خیلی راحت و باحاله، الو از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟</p>
+<p>وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای میشه نمیشه یه نسخه برای همه اپلیکیشن‌ها پیچید، بعضی وقت ها stick شدن به همون امکانات react مثل Context API جوابه و بعضی وقتها نیاز به کتابخانون هایی مجزا برای مدیریت stateها داریم. درباره اینکه استراتژی مناسب برای این موضع چیه، انشالله توی یه پست مجزا صحبت می کنیم ولی به عنوان یه rule of thumb باید بگم، این دو نکته می تونه به شما بگه که شاید وقتش باشه که به یک کتابخونه مدیریت state مجزا فکر کنید.</p>
+<ul>
+<li><strong>تعداد زیاد state ها در Context API</strong></li>
+<li><strong>نرخ بالای بروزرسانی state ها در کامپوننت</strong></li>
+</ul>
+<p>البته core react دائما در حال توسعه است و مواردی مثل react compiler می تونه تا حدودی شرایط رو تغییر بده.</p>
+<p>خب zustand قطعا توی دسته کتابخونه های بیرونی قرار می گیره، کار با zustand خیلی راحت و مشابه react عه، اول از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟</p>
 <h2 id="zustand-1">فلسفه عملکردی zustand</h2>
 <p>وقتی شما با zustand یک store در جایی می سازی در حقیقت در run-time جاوااسکریپت یه محدوده ای می‌سازی که داخلش چیزهایی که می‌خوای رو ذخیره می‌کنی. یعنی یه چیزی شبیه این شکل زیری</p>
 <p><img src="/images/assets/zustand1.webp" alt="Zustand run-time assets" /></p>
@@ -38,7 +42,7 @@
 <p>Zustand یه کتابخونهٔ مدیریت state کم‌حجم ولی واقعاً پرقدرتِ. برای ساختن state کافیه متد <code>create</code> رو صدا بزنید:</p>
 <pre><code class="language-javascript">import { create } from &quot;zustand&quot;;
 </code></pre>
-<p>ببینید، توضیح دادن گاهی سخته — نشون دادن راحت‌تر و گویا‌تره:</p>
+<p>حالا store رو populate می‌کنیم:</p>
 <pre><code class="language-typescript">export const useTasksStore = create&lt;TasksState&gt;((set) =&gt; ({
     tasks,
     setTasks: (arg: Task[] | ((tasks: Task[]) =&gt; Task[])) =&gt; {
@@ -54,7 +58,7 @@
     setCurrentFilter: (newFilter: string) =&gt; set({ currentFilter: newFilter }),
 }));
 </code></pre>
-<p>ما به <code>create</code> یه تابع می‌دیم که همون state رو برمی‌گردونه. همین — ساده و بی‌پیرایه. اون تابع معمولاً یه آرگومان می‌گیره (معمولاً <code>set</code>) که باهاش می‌تونید state رو به‌روزرسانی کنید؛ هم به‌صورت setter ساده، هم با توجه به مقدار قبلی که خیلی وقت‌ها مفیده.</p>
+<p>همونطور که می‌بینید تابع ‌create یه تابع به عنوان آرگومان خودش می‌گیره. این تابع یک ‌‌set داره که می‌تونیم ازش برای ‌set موارد داخل ‌store مون استفاده کنیم.</p>
 <h2 id="section">منابع</h2>
 <ul>
 <li><a href="https://frontendmasters.com/blog/introducing-zustand/">Introducing Zustand</a></li>
