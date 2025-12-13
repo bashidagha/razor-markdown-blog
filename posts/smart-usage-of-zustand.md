@@ -7,14 +7,14 @@ image: "/images/blog/zustand.webp"
 
 ## چرا zustand ؟
 
-وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای میشه نمیشه یه نسخه برای همه اپلیکیشن‌ها پیچید، بعضی وقت ها stick شدن به همون امکانات react مثل Context API جوابه و بعضی وقتها نیاز به کتابخانونه هایی مجزا برای مدیریت stateها داریم. درباره اینکه استراتژی مناسب برای هر موضوع چیه، امیدوارم بتونیم توی یه پست مجزا راجع بهش صحبت می کنیم ولی به عنوان یه rule of thumb باید بگم، این دو نکته می تونه به شما بگه که شاید وقتش باشه که به یک کتابخونه مدیریت state مجزا فکر کنید.
+وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای میشه نمیشه یه نسخه برای همه اپلیکیشن‌ها پیچید، بعضی وقت ها stick شدن به همون امکانات react مثل Context API جوابه و بعضی وقتها نیاز به کتابخونه هایی مجزا برای مدیریت stateها داریم. درباره اینکه استراتژی مناسب برای هر موضوع چیه، امیدوارم بتونیم توی یه پست مجزا راجع بهش صحبت کنیم ولی به عنوان یه rule of thumb باید بگم که این دو نکته می تونه به شما بگه شاید وقتش باشه که به یک کتابخونه مدیریت state مجزا فکر کنید.
 
 -   **تعداد زیاد state ها در Context API**
 -   **نرخ بالای بروزرسانی state ها در کامپوننت**
 
 البته core react دائما در حال توسعه است و مواردی مثل react compiler می تونه تا حدودی شرایط رو تغییر بده.
 
-حالا بریم سر داستان خودمون، zustand قطعا توی دسته کتابخونه های مجزا از core react برای مدیریت stateها قرار می گیره، کار با zustand خیلی راحت و مشابه react عه، اول از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟
+حالا بریم سر داستان خودمون. zustand قطعا توی دسته کتابخونه های مجزا از core react برای مدیریت stateها قرار می گیره. کار با zustand خیلی راحت و مشابه react عه، اول از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟
 
 ## فلسفه عملکردی zustand
 
@@ -114,7 +114,8 @@ const [currentFilter] = useState({"Current State's Value in the Store"});
 const { currentFilter } = useTasksStore();
 ```
 
-‌‌zustand به طور پیشفرض در جواب `useTasksStore` کل store رو برمی گردونه که در واقع اگر به فلسفه zustand برگردیم یعنی stateهای کل store در این کامپوننت قرار داده میشن و این یعنی اگر هرکدوم از اون state ها آپدیت بشن این کامپوننت rerender خواهد شد. در این مورد object destructring هم با این که انجام شده ولی تاثیری نداره.
+کتابخونه zustand به طور پیشفرض در جواب `useTasksStore` کل store رو برمی گردونه که در واقع اگر به فلسفه zustand برگردیم یعنی stateهای کل store در این کامپوننت قرار داده میشن و این یعنی اگر هرکدوم از اون state ها آپدیت بشن این کامپوننت rerender خواهد شد. در این مورد object destructring هم با این که انجام شده ولی تاثیری نداره.که
+
 این اتفاق شبیه همون چیزی که توی Context API خود react رخ میده، فلذا اینگونه استفاده با هدف zustand در غالب مواقع همخوانی نداره.
 
 > خب تا همینجا کافیه که بتونید توی کامپوننت‌هاتون از zustand استفاده کنید و کنترل ‌‌rendering رو راحتتر داشته باشید. از اینجا ببعد ما به این می‌پردازیم که چگونه از ‌zustand به صورت هوشمندانه‌تری استفاده کنیم و اینم یادتون نره که هرجا شک کردید که کدوم راه درستتره just stick to atomic pattern که همیشه جوابه!
@@ -136,6 +137,7 @@ type State = {
 
 export const useStore = create<State>((set) => ({
     count: 0,
+    views: 1,
     user: { name: "Marco", email: "marco@example.com" },
     increment: () => set((state) => ({ count: state.count + 1 })),
 }));
@@ -146,46 +148,59 @@ export const useStore = create<State>((set) => ({
 ```typescript
 ‍‍import { useStore } from './store'
 
-export default function Example() {
+export default function Example1() {
   console.log('rendered')
 
-  const { user } = useStore((state) => ({
-    user: state.user,
-  }))
+  const user = useStore(state => state.user)
+  const count = useStore(state => state.count)
+  const increment = useStore(state => state.increment)
 
   return (
     <div>
       <p>Count: {count}</p>
-      <p>User: {user.name}</p>
+      <button onClick={increment}>User: {user.name}</button>
     </div>
   )
 }
 ```
 
-در این مثال اگر فقط مقدار email در آبجکت user در جایی عوض بشه این کامپوننت rerender میشه. خب قاعدتا این مطلوب نیست و ما باید به صورت atomic این رو بخونیم. یعنی اینجوری بنویسیم.
+همانطور که می بینید اگر تعداد بیشتری state داشته باشیم یه جورایی کلی باید چیز تکراری و boilerplate بنویسیم. آیا راه بهتری هم هست؟ بله!  
 
-‍‍‍```typescript
-const name = useStore(state => state.user.name);
-const email = useStore(state => state.user.email);
+ ```typescript
+  const { user, count, increment } = useStore(state => ({ user: state.user, count: state.count,  increment: state.increment }))
+```
+ 
+ گیرش کجاست؟  فرض کنید در یک کامپوننت دیگه داشته باشیم.
+ 
+```typescript
+‍‍import { useStore } from './store'
 
-````
+export default function Example2() {
+  const {user, views} = useStore(state => ({views:state.views, user:state.user}))
 
- خب این آبجکت دوتا key داشت اگر تعداد key های بیشتری میداشت باید کلی از اینا می‌نوشتیم.
+  return (
+  		<div>
+  		<p>{user}</p>
+       <p>User views: {views}</p>
+       </div>
+  )
+}
+``` 
+ 
+ حالا اگر به طور مثال از increment در  Example1 استفاده کنیم یعنی روی button کلیک کنیم،  این خط (سلکتور) یکبار دیگر اجرا خواهد شد تا از تغییرات احتمالی مطلع شود.
+ 
+ ```typescript
+  const {user, views} = useStore(state => ({views:state.views, user:state.user}))
+``` 
 
- ‍```typescript
-const name = useStore(state => state.user.name);
-const email = useStore(state => state.user.email);
-const firstname = useStore(state => state.user.firstname);
-const lastname = useStore(state => state.user.lastname);
-const nickname = useStore(state => state.user.nickname);
+ طبق تعریف  increment  فقط count در store عوض می شود. اما این خط یکبار دیگر ارزیابی شده و آبجکت دیگری دقیقا با همین مقادیر تولید خواهد کرد(چون چیزی عوض نشده است). حالا چون دو آبجکت رفرنس یکسانی ندارد، در نتیجه این کامپوننت بیخودی رندر مجدد می شود.
 
-````
+برای حل این مشکل باید یه جوری به zustand بگیم که آقا ما نمی خواهیم دو تا آبجکت (reference values in general)  رو با هم از نظر رفرنس مقایسه کنی و فقط همین که مقادیرش عوض بشه برامون مهمه. برای این کار از مفهوم shallow استفاده می کنیم.
+ 
 
-خب اینجوری یکم boilerplate میشه و جذاب نیست. به جای این کار می تونیم از مفهوم shallow استفاده کنیم.
+### مفهوم مقایسه shallow
 
-### استفاده از shallow و useShallow
-
-خب اول از همه مروری به مبحث shallow equality خواهیم کرد. چک می‌کنیم فقط **لایه اول آبجکت یا آرایه** یکیه یا نه، عمیق نمی‌ریم داخلش.
+خب اول از همه مروری به مبحث shallow equality خواهیم کرد. در مقایسه shallow چک می‌کنیم فقط **لایه اول آبجکت یا آرایه** یکیه یا نه، عمیق نمی‌ریم داخلش.
 
 ```js
 function shallowEqual(a, b) {
@@ -199,16 +214,96 @@ function shallowEqual(a, b) {
   return true;
 }
 
-// مثال:
 shallowEqual({x:1, y:2}, {x:1, y:2}) // true
 shallowEqual({x:1}, {x:1, y:2})      // false
 ‍‍‍
 ```
 
-در مقابل shallow equality مفهوم deep equality قرار داره که میره تا فیها خالدون رو بررسی می کنه که برابر باشند. تقریبا تمامی سیستم‌های مدیریت ‌state ازجمله خود react و zustand برای اینکه متوجه بشن state عوض شده یا نه از shallow استفاده می کنند که همونطور که فانکشنش رو می بینید خیلی سریعتر از حالتی است که بخواد تا آخرین لایه آبجکت های nested رو بررسی کنه ولی خب یه سری چیزها رو هم از دست میده یعنی یه سری تغییرات رو چون shallow مقایسه می کنه sense نمی کنه.
+یعنی با توجه به کد، در مقایسه shallow موارد زیر بررسی می شود: (برای آبجکت رو نوشتم برای آرایه هم مشابه و ساده‌تر است)
+
+* اگر رفرنس مشترک دارند که خب قطعا برابر هستند.
+* اگر رفرنس مشترک ندارند ولی key/value های یکسانی دارند باز هم برابر هستند.
+* در غیر اینصورت برابر نیستند.
+
+دقت کنید مثلا این دوتا برابر نیستند چون آبجکت‌ها در مقام مقایسه چون رفرنس یکسانی ندارند، یکی نیستند.  
+
+```js
+shallowEqual({x:1, y:{a:3}}, {x:1, y:{a:3}}) // false
+```
+
+تقریبا تمامی سیستم‌های مدیریت ‌state ازجمله خود react و zustand برای اینکه متوجه بشن state عوض شده یا نه از shallow استفاده می کنند که همونطور که فانکشنش رو می بینید خیلی سریعتر از حالتی است که بخواد تا آخرین لایه آبجکت های nested رو بررسی کنه (Deep Comparsion) ولی خب یه سری چیزها رو هم از دست میده یعنی یه سری تغییرات رو چون shallow مقایسه می کنه sense نمی کنه.
+
+### استفاده از shallow و useShallow
+
+حالا مثالی که مارو به سمت استفاده از shallow سوق داد رو دوباره بازنویسی می کنیم.
+
+```typescript
+‍‍import { useStore } from './store'
+import { shallow } from 'zustand/shallow'
+
+export default function Example2() {
+  const {user, views} = useStore(state => ({views:state.views, user:state.user})‌, shallow)
+
+  return (
+  		<div>
+  		<p>{user}</p>
+       <p>User views: {views}</p>
+       </div>
+  )
+}
+``` 
+
+برای اولی هم  
+
+```typescript
+‍‍import { useStore } from './store'
+import { shallow } from 'zustand/shallow'
+
+export default function Example1() {
+	 const { user, count, increment } = useStore(state => ({ user: state.user, count: state.count,  increment: state.increment }), shallow) 
+
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>User: {user.name}</button>
+    </div>
+  )
+}
+```
+
+اینجوری zustand میاد نگاه می کنه اگر توی store صرفا همون state هایی که اینجا خوندیم عوض شده، فلذا بعدش باعث re-render میشه و در غیراینصورت هم که هیچ!
+
+به جای استفاده از shallow میشه از useShallow هم استفاده کرد که syntax مدرن تری هم هست.  
+
+```typescript
+‍‍import { useStore } from './store'
+import { useShallow } from 'zustand/react/shallow'
+
+export default function Example1() {
+	 const { user, count, increment } = useStore(useShallow((state) => ({ user: state.user, count: state.count,  increment: state.increment })))
+
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>User: {user.name}</button>
+    </div>
+  )
+}
+```
+
+یا میشه همینم یکم جمع و جورتر نوشت که بیشتر شبیه خود react بشه
+ 
+```typescript
+	 const [ user, count, increment ] = useStore(useShallow((state) => ([state.user, state.count,  state.increment ])))
+```
+
+
 
 ## منابع
 
 -   [Zustand Documentation](https://zustand.docs.pmnd.rs/)
 -   [Introducing Zustand](https://frontendmasters.com/blog/introducing-zustand/)
 -   [Why Zustand has useShallow](https://www.mordonez.me/posts/why-zustand-has-useshallow-and-how-it-prevents-unnecessary-renders/?utm_source=chatgpt.com)
+-   [Shallow compare react legacy](https://legacy.reactjs.org/docs/shallow-compare.html)	

@@ -1,8 +1,8 @@
 ---
-title: "مجموعه نمونه — بخش 1: معرفی"
+title: "تست‌نویسی در javascript/typescript — بخش 1: مقدمات"
 date: 2025-12-07
-author: "نویسنده نمونه"
-series: "تست‌نویسی در javascript/typescript"
+author: "فرشید"
+series: "تست‌نویسی در Javascript/Typescript"
 series_index: 1
 image: "/images/blog/testing-title.webp"
 ---

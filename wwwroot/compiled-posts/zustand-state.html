@@ -1,45 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>استفاده از zustand برای بهبود مدیریت state ها</title>
-</head>
-<body>
-    <article>
-        <header>
-            <h1>استفاده از zustand برای بهبود مدیریت state ها</h1>
-            <p class="meta">Published on December 05, 2025 by فرشید</p>
-        </header>
-        <div class="content">
-                <nav class="toc-container bg-gray-50 border rounded-md p-4 mb-6" aria-label="Table of contents">
+<nav class="toc-container bg-gray-50 border rounded-md p-4 mb-6" aria-label="Table of contents">
   <p class="font-semibold mb-2">Contents</p>
   <ul class="toc-list">
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand">چرا zustand ؟</a></li>
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-1">فلسفه عملکردی zustand</a></li>
-    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-2">اولین گام zustand</a></li>
+    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-store">اولین گام zustand - ساخت store</a></li>
+    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-2">استفاده از zustand در کامپوننت</a></li>
+    <ul>
+    <li class="toc-item toc-h3"><a class="toc-link text-sm text-blue-600 hover:underline" href="#atmoic">استفاده از الگوی atmoic تا ابد!</a></li>
+    <li class="toc-item toc-h3"><a class="toc-link text-sm text-blue-600 hover:underline" href="#store">خواندن store به صورت گرتره‌ای</a></li>
+    </ul>
+    <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#zustand-3">استفاده هوشمندانه‌تر از ‌zustand</a></li>
+    <ul>
+    <li class="toc-item toc-h3"><a class="toc-link text-sm text-blue-600 hover:underline" href="#shallow">مفهوم مقایسه shallow</a></li>
+    <li class="toc-item toc-h3"><a class="toc-link text-sm text-blue-600 hover:underline" href="#shallow-useshallow">استفاده از shallow و useShallow</a></li>
+    </ul>
     <li class="toc-item toc-h2"><a class="toc-link text-sm text-blue-600 hover:underline" href="#section">منابع</a></li>
   </ul>
 </nav>
 
 <h2 id="zustand">چرا zustand ؟</h2>
-<p>وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای میشه نمیشه یه نسخه برای همه اپلیکیشن‌ها پیچید، بعضی وقت ها stick شدن به همون امکانات react مثل Context API جوابه و بعضی وقتها نیاز به کتابخانون هایی مجزا برای مدیریت stateها داریم. درباره اینکه استراتژی مناسب برای این موضع چیه، انشالله توی یه پست مجزا صحبت می کنیم ولی به عنوان یه rule of thumb باید بگم، این دو نکته می تونه به شما بگه که شاید وقتش باشه که به یک کتابخونه مدیریت state مجزا فکر کنید.</p>
+<p>وقتی صحبت از مدیریت stateها در اپلیکیشن‌های react ای میشه نمیشه یه نسخه برای همه اپلیکیشن‌ها پیچید، بعضی وقت ها stick شدن به همون امکانات react مثل Context API جوابه و بعضی وقتها نیاز به کتابخونه هایی مجزا برای مدیریت stateها داریم. درباره اینکه استراتژی مناسب برای هر موضوع چیه، امیدوارم بتونیم توی یه پست مجزا راجع بهش صحبت کنیم ولی به عنوان یه rule of thumb باید بگم که این دو نکته می تونه به شما بگه شاید وقتش باشه که به یک کتابخونه مدیریت state مجزا فکر کنید.</p>
 <ul>
 <li><strong>تعداد زیاد state ها در Context API</strong></li>
 <li><strong>نرخ بالای بروزرسانی state ها در کامپوننت</strong></li>
 </ul>
 <p>البته core react دائما در حال توسعه است و مواردی مثل react compiler می تونه تا حدودی شرایط رو تغییر بده.</p>
-<p>خب zustand قطعا توی دسته کتابخونه های بیرونی قرار می گیره، کار با zustand خیلی راحت و مشابه react عه، اول از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟</p>
+<p>حالا بریم سر داستان خودمون. zustand قطعا توی دسته کتابخونه های مجزا از core react برای مدیریت stateها قرار می گیره. کار با zustand خیلی راحت و مشابه react عه، اول از همه بگذارید راجع به فلسفه کارکردی zustand یکم صحبت کنیم و اینکه چجوری داره کار می‌کنه؟</p>
 <h2 id="zustand-1">فلسفه عملکردی zustand</h2>
 <p>وقتی شما با zustand یک store در جایی می سازی در حقیقت در run-time جاوااسکریپت یه محدوده ای می‌سازی که داخلش چیزهایی که می‌خوای رو ذخیره می‌کنی. یعنی یه چیزی شبیه این شکل زیری</p>
 <p><img src="/images/assets/zustand1.webp" alt="Zustand run-time assets" /></p>
-<p>اول بگم ‌lifecycle این store کاملا به ‌‌‌run-time شما بستگی داره یعنی اگر صفحه رو reload کنید قاعدتا این store پاک میشه مگر اینکه جای دیگه ای هم persist بشه که موضوع بحث ما فعلا نیست.
-همونطور که توی شکل بالام مشخصه اپلیکیشن شما هر حرکتی بزنه دخلی(!) به این store به طور معمول نداره جون space یا فضای حافظه و run-time شون جداست.</p>
+<p>اول بگم ‌lifecycle این store در وهله اول کاملا به ‌‌‌run-time مرورگر شما بستگی داره یعنی اگر صفحه مرورگر رو reload کنید قاعدتا این store پاک میشه مگر اینکه جای دیگه ای هم persist بشه که موضوع بحث ما فعلا نیست.
+همونطور که توی شکل بالام مشخصه اپلیکیشن شما هر حرکتی بزنه دخلی(!) به این store به طور معمول نداره چون space یا فضای حافظه و run-time شون جداست.</p>
 <p>حالا از این ببعدش جالب میشه، شما وقتی zustand رو به طور مثال در برنامه react تون استفاده می‌کنید یه wrapper ای از جنس stateهای react دورش ایجاد میشه که فرآیندهای آپدیت و rendering در react بدین وسیله handle میشه.</p>
-<p>شکل زیر تقریبی از چیزی است که اتفاق می‌افته. به عبارتی برای اینکه react بتونه rendering رو برعهده بگیره نیازی به چیزی که براش آشناست یعنی همون stateها داره. حالا ما هربار که useStore رو استفاده کنیم(بعدا خواهیم گفت)، در حقیقت کنترل re-render و render رو برعهده می‌گیریم.</p>
+<p>شکل زیر تقریبی از چیزی است که اتفاق می‌افته. به عبارتی برای اینکه react برای این که بتونه فرآیندهای rendering رو برعهده بگیره نیاز به چیزی داره که براش معنا و مفهوم داشته باشه که همون stateهاست. حالا ما هربار که useStore رو استفاده کنیم(بعدا خواهیم گفت)، در حقیقت کنترل re-render و render رو برعهده می‌گیریم.</p>
 <p><img src="/images/assets/zustand2.webp" alt="Zustand React model" /></p>
-<h2 id="zustand-2">اولین گام zustand</h2>
-<p>Zustand یه کتابخونهٔ مدیریت state کم‌حجم ولی واقعاً پرقدرتِ. برای ساختن state کافیه متد <code>create</code> رو صدا بزنید:</p>
+<h2 id="zustand-store">اولین گام zustand - ساخت store</h2>
+<p>Zustand برای ساختن state کافیه متد <code>create</code> رو صدا بزنید:</p>
 <pre><code class="language-javascript">import { create } from &quot;zustand&quot;;
 </code></pre>
 <p>حالا store رو populate می‌کنیم:</p>
@@ -58,14 +54,189 @@
     setCurrentFilter: (newFilter: string) =&gt; set({ currentFilter: newFilter }),
 }));
 </code></pre>
-<p>همونطور که می‌بینید تابع ‌create یه تابع به عنوان آرگومان خودش می‌گیره. این تابع یک ‌‌set داره که می‌تونیم ازش برای ‌set موارد داخل ‌store مون استفاده کنیم.</p>
+<p>همونطور که می‌بینید تابع <code>‌create</code> یه تابع به عنوان آرگومان خودش می‌گیره. این تابع یک خودش یه آرگومان به نام <code>‌‌set</code> داره که می‌تونیم ازش برای مقداردهی موارد داخل ‌store مون استفاده کنیم. (آرگومان <code>get</code> هم داره که بعدا میگیم به چه دردی میخوره)</p>
+<p>طبعا ما می تونیم state ها رو به صورت پیچیده تری آپدیت کنیم و دستمون بازه اینجا. به این سبک partial update هم میگن.</p>
+<pre><code class="language-typescript">setCurrentView: (newView: TasksView) =&gt; set({ currentView: newView, tasks: [] }),
+</code></pre>
+<p>همچنین تابع بالا یه آرگومان دوم هم می گیره که باهاش می تونیم کل store رو replace کنیم، مثلا در مثال زیر store مون رو می تونیم با <code>clear</code> ریست کنیم. البته در استفاده ازش با دقت عمل کنید چون می تونه کل store تون رو wipe کنه.</p>
+<pre><code class="language-typescript">const initialState = {
+  user: null,
+  loggedIn: false,
+};
+
+const useStore = create((set) =&gt; ({
+  ...initialState,
+  clear: () =&gt; set(initialState, true),
+}));
+‍‍‍‍‍‍‍‍‍
+</code></pre>
+<p>خب حالا بریم این custom hook ای که ساختیم رو استفاده کنیم. منظورم همین store هست که با useStore ایجاد شده است. برای این کار روش های متنوعی وجود داره و خیلی راحت می‌تونید انتخاب اشتباهی رو صورت بدید و اوضاع ‌‌رو خرابش کنید. ما در ادامه خیلی گاماس گاماس با هم پیش میریم تا معایب و مزایای هر روش رو به خوبی خودتون متوجه بشید.</p>
+<h2 id="zustand-2">استفاده از zustand در کامپوننت</h2>
+<h3 id="atmoic">استفاده از الگوی atmoic تا ابد!</h3>
+<p>استفاده از zustand بدین شکل که state ها رو در متغیرهای مجزا استخراج کنیم(<code>atomic pattern</code>)، همیشه جوابه و توصیه خود zustand هم در غالب مواقع همین روشه.</p>
+<pre><code class="language-typescript">const currentView = useTasksStore(state =&gt; state.currentView);
+const tasks = useTasksStore(state =&gt; state.tasks);
+const currentFilter = useTasksStore(state =&gt; state.currentFilter);
+‍‍‍
+</code></pre>
+<p>همونطور که واضحه در این حالت و هربار باید explictly بگیم چی ها رو می خواهیم. یعنی باید از selector استفاده کنیم، مشابه اونچه در غالب state manager ها مثل redux هم داشتیم. اینجوری دقیقا میگیم چیارو می خواهیم و فقط state مربوط به همونا میاد توی کامپوننت مون و هربار که فقط این state عوض بشه کامپوننت ما rerender میشه. یعنی میشه با تقریبی اینو معادل این دونست برای درک بهتر وگرنه در واقعیت کمی پیچیده تره</p>
+<pre><code class="language-typescript">const [currentFilter] = useState({&quot;Current State's Value in the Store&quot;});
+.
+.
+</code></pre>
+<p>خب دیگه حالا هرچی توی store عوض بشه تا وقتی currentFilter عوض نشه این state موجبات rerender کامپوننت مون رو فراهم نمی کنه و این درسته!</p>
+<h3 id="store">خواندن store به صورت گرتره‌ای</h3>
+<p>می تونیم به روش زیر state مون رو از store بخونیم که خب اتفاقا کار هم می کنه.</p>
+<pre><code class="language-typescript">const { currentFilter } = useTasksStore();
+</code></pre>
+<p>کتابخونه zustand به طور پیشفرض در جواب <code>useTasksStore</code> کل store رو برمی گردونه که در واقع اگر به فلسفه zustand برگردیم یعنی stateهای کل store در این کامپوننت قرار داده میشن و این یعنی اگر هرکدوم از اون state ها آپدیت بشن این کامپوننت rerender خواهد شد. در این مورد object destructring هم با این که انجام شده ولی تاثیری نداره.که</p>
+<p>این اتفاق شبیه همون چیزی که توی Context API خود react رخ میده، فلذا اینگونه استفاده با هدف zustand در غالب مواقع همخوانی نداره.</p>
+<blockquote>
+<p>خب تا همینجا کافیه که بتونید توی کامپوننت‌هاتون از zustand استفاده کنید و کنترل ‌‌rendering رو راحتتر داشته باشید. از اینجا ببعد ما به این می‌پردازیم که چگونه از ‌zustand به صورت هوشمندانه‌تری استفاده کنیم و اینم یادتون نره که هرجا شک کردید که کدوم راه درستتره just stick to atomic pattern که همیشه جوابه!</p>
+</blockquote>
+<blockquote>
+<p>استفاده از zustand طبیعتا هیچ محدودیتی در عدم استفاده از کتابخونه‌های دیگه مدیریت ‌state برای شما ایجاد نمی کنه و می تونید توی یه پروژه redux ای یا با context API به کارش بگیرید، اگر لازم بود.</p>
+</blockquote>
+<h2 id="zustand-3">استفاده هوشمندانه‌تر از ‌zustand</h2>
+<p>اول از همه با یه مثال react ای بگم چه مواقع الگوی atomic کد مارو یه جوری می‌کنه!</p>
+<pre><code class="language-typescript">import { create } from &quot;zustand&quot;;
+
+type State = {
+    count: number;
+    user: { name: string; email: string };
+    increment: () =&gt; void;
+};
+
+export const useStore = create&lt;State&gt;((set) =&gt; ({
+    count: 0,
+    views: 1,
+    user: { name: &quot;Marco&quot;, email: &quot;marco@example.com&quot; },
+    increment: () =&gt; set((state) =&gt; ({ count: state.count + 1 })),
+}));
+</code></pre>
+<p>حالا استفاده ازش</p>
+<pre><code class="language-typescript">‍‍import { useStore } from './store'
+
+export default function Example1() {
+  console.log('rendered')
+
+  const user = useStore(state =&gt; state.user)
+  const count = useStore(state =&gt; state.count)
+  const increment = useStore(state =&gt; state.increment)
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;User: {user.name}&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>همانطور که می بینید اگر تعداد بیشتری state داشته باشیم یه جورایی کلی باید چیز تکراری و boilerplate بنویسیم. آیا راه بهتری هم هست؟ بله!</p>
+<pre><code class="language-typescript"> const { user, count, increment } = useStore(state =&gt; ({ user: state.user, count: state.count,  increment: state.increment }))
+</code></pre>
+<p>گیرش کجاست؟  فرض کنید در یک کامپوننت دیگه داشته باشیم.</p>
+<pre><code class="language-typescript">‍‍import { useStore } from './store'
+
+export default function Example2() {
+  const {user, views} = useStore(state =&gt; ({views:state.views, user:state.user}))
+
+  return (
+  		&lt;div&gt;
+  		&lt;p&gt;{user}&lt;/p&gt;
+       &lt;p&gt;User views: {views}&lt;/p&gt;
+       &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>حالا اگر به طور مثال از increment در  Example1 استفاده کنیم یعنی روی button کلیک کنیم،  این خط (سلکتور) یکبار دیگر اجرا خواهد شد تا از تغییرات احتمالی مطلع شود.</p>
+<pre><code class="language-typescript"> const {user, views} = useStore(state =&gt; ({views:state.views, user:state.user}))
+</code></pre>
+<p>طبق تعریف  increment  فقط count در store عوض می شود. اما این خط یکبار دیگر ارزیابی شده و آبجکت دیگری دقیقا با همین مقادیر تولید خواهد کرد(چون چیزی عوض نشده است). حالا چون دو آبجکت رفرنس یکسانی ندارد، در نتیجه این کامپوننت بیخودی رندر مجدد می شود.</p>
+<p>برای حل این مشکل باید یه جوری به zustand بگیم که آقا ما نمی خواهیم دو تا آبجکت (reference values in general)  رو با هم از نظر رفرنس مقایسه کنی و فقط همین که مقادیرش عوض بشه برامون مهمه. برای این کار از مفهوم shallow استفاده می کنیم.</p>
+<h3 id="shallow">مفهوم مقایسه shallow</h3>
+<p>خب اول از همه مروری به مبحث shallow equality خواهیم کرد. در مقایسه shallow چک می‌کنیم فقط <strong>لایه اول آبجکت یا آرایه</strong> یکیه یا نه، عمیق نمی‌ریم داخلش.</p>
+<pre><code class="language-js">function shallowEqual(a, b) {
+  if (a === b) return true;          // اگه همون مرجع باشه
+  if (!a || !b) return false;        // اگه یکی null یا undefined باشه
+  if (Object.keys(a).length !== Object.keys(b).length) return false;
+
+  for (let key in a) {
+    if (a[key] !== b[key]) return false; // فقط لایه اول رو چک می‌کنیم
+  }
+  return true;
+}
+
+shallowEqual({x:1, y:2}, {x:1, y:2}) // true
+shallowEqual({x:1}, {x:1, y:2})      // false
+‍‍‍
+</code></pre>
+<p>یعنی با توجه به کد، در مقایسه shallow موارد زیر بررسی می شود: (برای آبجکت رو نوشتم برای آرایه هم مشابه و ساده‌تر است)</p>
+<ul>
+<li>اگر رفرنس مشترک دارند که خب قطعا برابر هستند.</li>
+<li>اگر رفرنس مشترک ندارند ولی key/value های یکسانی دارند باز هم برابر هستند.</li>
+<li>در غیر اینصورت برابر نیستند.</li>
+</ul>
+<p>دقت کنید مثلا این دوتا برابر نیستند چون آبجکت‌ها در مقام مقایسه چون رفرنس یکسانی ندارند، یکی نیستند.</p>
+<pre><code class="language-js">shallowEqual({x:1, y:{a:3}}, {x:1, y:{a:3}}) // false
+</code></pre>
+<p>تقریبا تمامی سیستم‌های مدیریت ‌state ازجمله خود react و zustand برای اینکه متوجه بشن state عوض شده یا نه از shallow استفاده می کنند که همونطور که فانکشنش رو می بینید خیلی سریعتر از حالتی است که بخواد تا آخرین لایه آبجکت های nested رو بررسی کنه (Deep Comparsion) ولی خب یه سری چیزها رو هم از دست میده یعنی یه سری تغییرات رو چون shallow مقایسه می کنه sense نمی کنه.</p>
+<h3 id="shallow-useshallow">استفاده از shallow و useShallow</h3>
+<p>حالا مثالی که مارو به سمت استفاده از shallow سوق داد رو دوباره بازنویسی می کنیم.</p>
+<pre><code class="language-typescript">‍‍import { useStore } from './store'
+import { shallow } from 'zustand/shallow'
+
+export default function Example2() {
+  const {user, views} = useStore(state =&gt; ({views:state.views, user:state.user})‌, shallow)
+
+  return (
+  		&lt;div&gt;
+  		&lt;p&gt;{user}&lt;/p&gt;
+       &lt;p&gt;User views: {views}&lt;/p&gt;
+       &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>برای اولی هم</p>
+<pre><code class="language-typescript">‍‍import { useStore } from './store'
+import { shallow } from 'zustand/shallow'
+
+export default function Example1() {
+	 const { user, count, increment } = useStore(state =&gt; ({ user: state.user, count: state.count,  increment: state.increment }), shallow) 
+
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;User: {user.name}&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>اینجوری zustand میاد نگاه می کنه اگر توی store صرفا همون state هایی که اینجا خوندیم عوض شده، فلذا بعدش باعث re-render میشه و در غیراینصورت هم که هیچ!</p>
+<p>به جای استفاده از shallow میشه از useShallow هم استفاده کرد که syntax مدرن تری هم هست.</p>
+<pre><code class="language-typescript">‍‍import { useStore } from './store'
+import { useShallow } from 'zustand/react/shallow'
+
+export default function Example1() {
+	 const { user, count, increment } = useStore(useShallow((state) =&gt; ({ user: state.user, count: state.count,  increment: state.increment })))
+
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;User: {user.name}&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>یا میشه همینم یکم جمع و جورتر نوشت که بیشتر شبیه خود react بشه</p>
+<pre><code class="language-typescript">	 const [ user, count, increment ] = useStore(useShallow((state) =&gt; ([state.user, state.count,  state.increment ])))
+</code></pre>
 <h2 id="section">منابع</h2>
 <ul>
-<li><a href="https://frontendmasters.com/blog/introducing-zustand/">Introducing Zustand</a></li>
 <li><a href="https://zustand.docs.pmnd.rs/">Zustand Documentation</a></li>
+<li><a href="https://frontendmasters.com/blog/introducing-zustand/">Introducing Zustand</a></li>
+<li><a href="https://www.mordonez.me/posts/why-zustand-has-useshallow-and-how-it-prevents-unnecessary-renders/?utm_source=chatgpt.com">Why Zustand has useShallow</a></li>
+<li><a href="https://legacy.reactjs.org/docs/shallow-compare.html">Shallow compare react legacy</a></li>
 </ul>
-
-        </div>
-    </article>
-</body>
-</html>
